@@ -33,6 +33,6 @@ export function orgPageData(data: OrgSearchType): Promise<NormalRespType<OrgPage
 }
 
 //7.导出部门组织
-export function orgDataExport(data: OrgSearchType) {
-  return request.post(`/system-mgr/sys-org/orgDataExport`, data);
+export function orgExportData(data: OrgSearchType) {
+  return request.post(`/system-mgr/sys-org/orgExportData`, data, { responseType: 'blob' });
 }

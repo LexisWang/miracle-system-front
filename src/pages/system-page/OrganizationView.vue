@@ -75,8 +75,8 @@ import { CaretRight, DeleteFilled, Edit, Switch, View } from "@element-plus/icon
 import { dateToString, valueToLabel } from "@/utils/transform";
 import {
   orgAddData,
-  orgDataExport,
   orgDeleteData,
+  orgExportData,
   orgOptsData,
   orgPageData,
   orgUpdateData
@@ -106,7 +106,9 @@ const otherOperates: OperateMenuType[] = [
     name: '导出',
     key: 'export',
     icon: CaretRight,
-    callback: orgDataExport,
+    callback: () => {
+      orgExportData(searchData.value).then();
+    },
     permission: { name: 'export-org', code: 2 },
   },
 ];

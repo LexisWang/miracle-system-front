@@ -31,23 +31,47 @@ ajaxNormal.interceptors.request.use(
 );
 //3.响应拦截
 ajaxNormal.interceptors.response.use(
-    res => {
-      const resData = res.data;
-      const code = resData?.code;
+    ({ data: resData, headers }) => { //@ts-ignore
+      if (headers?.getContentType?.() === 'application/json') {
+        if (resData instanceof Blob) {
+          const reader = new FileReader();
+          reader.readAsText(resData, 'utf-8');
+          reader.onload = function () {
+            console.info(reader.result);
+            resData = JSON.parse(reader.result as string);
 
-      if (code && code !== 200) {
-        const msg = resData.msg || RES_CODE[code] || RES_CODE[500];
-        ElMessage.error(msg);
-        return Promise.reject(resData);
-      } else if (code && code === 200) {
-        return resData;
+            const code = resData?.code;
+            if (code && code !== 200) {
+              const msg = resData.msg || RES_CODE[code] || RES_CODE[500];
+              ElMessage.error(msg);
+              return Promise.reject(resData);
+            } else if (code && code === 200) {
+              return resData;
+            } else {
+              ElMessage.error("返回结果中不存在对应的状态码");
+              return Promise.reject(resData);
+            }
+          };
+        } else {
+          const code = resData?.code;
+          if (code && code !== 200) {
+            const msg = resData.msg || RES_CODE[code] || RES_CODE[500];
+            ElMessage.error(msg);
+            return Promise.reject(resData);
+          } else if (code && code === 200) {
+            return resData;
+          } else {
+            ElMessage.error("返回结果中不存在对应的状态码");
+            return Promise.reject(resData);
+          }
+        }
       } else {
         // 截取文件名，这里是后端返回了文件名+后缀，如果没有可以自己拼接
         const fileName = decodeURI(
-            res.headers['pragma']?.split('filename=')?.[1] || '默认文件名'
+            headers['pragma']?.split('filename=')?.[1] || '默认文件名'
         );
         // 将`blob`对象转化成一个可访问的`url`
-        const blob = new Blob([res.data]);
+        const blob = new Blob([resData]);
 
         //兼容IE浏览器
         //@ts-ignore
@@ -67,7 +91,6 @@ ajaxNormal.interceptors.response.use(
 
         return resData;
       }
-
     }, err => {
       const { response } = err;
       let { message } = err;
