@@ -23,7 +23,6 @@
 </template>
 
 <script setup lang='ts'>
-import { defineProps } from 'vue';
 import type { Router, RouteRecordRaw } from 'vue-router';
 
 const props = defineProps<{ data?: RouteRecordRaw[]; isCollapse: boolean; router: Router }>();

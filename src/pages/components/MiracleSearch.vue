@@ -15,7 +15,7 @@
         />
         <el-select
           v-else-if="item.type === 'select'"
-          :multiple="true"
+          :multiple="item.multiple"
           :clearable="true"
           :collapse-tags="true"
           :collapse-tags-tooltip="true"
@@ -45,6 +45,7 @@
           collapse-tags
           :options="cascadeOpts[item.prop]"
           v-model="searchData[item.prop]"
+          :placeholder="item.placeholder"
           :props="{checkStrictly: true, multiple: true}"
           style="width: 100%; margin-bottom: 8px"
         />
@@ -94,7 +95,7 @@
 
 <script lang="ts" setup="">
 //a.公共引入
-import { defineEmits, defineProps, ref } from 'vue';
+import { ref } from 'vue';
 import { MoreFilled } from '@element-plus/icons-vue';
 //b.自定义类型引入
 import type { OperateMenuType, SearchColumnType } from "@/type/base-type";
@@ -136,7 +137,7 @@ const handleSearchData = () => {
       searchData[key + 'Cascade'] = cascadeKey?.map(item => item[item.length - 1]);
     } else if (searchData[key] instanceof Object && searchData[key]?.[0] instanceof Object && !(searchData[key]?.[0] instanceof Array)) {
       searchData[key + 'Start'] = searchData[key][0].valueOf();
-      searchData[key + 'end'] = searchData[key][1].valueOf() + (24 * 60 * 60 * 1000);
+      searchData[key + 'End'] = searchData[key][1].valueOf() + (24 * 60 * 60 * 1000);
     }
   }
   emits('search-callback');

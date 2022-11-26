@@ -89,7 +89,7 @@
 
 <script setup lang="ts">
 //a.公共引入
-import { defineEmits, defineProps, ref, withDefaults } from 'vue';
+import { ref, withDefaults } from 'vue';
 //b.自定义类型引入
 import type { ListColumnType, SummaryMethodProps } from "@/type/base-type";
 //c.自定义工具引入

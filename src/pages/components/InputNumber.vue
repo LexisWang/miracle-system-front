@@ -6,12 +6,13 @@
     v-bind="$attrs"
     @focus="onFocusHandle"
     @blur="handleBlur"
+    :placeholder="placeholder"
   />
 </template>
 
 <script setup lang="ts">  //@ts-ignore
 import * as accounting from 'accounting-js';
-import { defineEmits, defineProps, onMounted, ref, withDefaults } from 'vue';
+import { withDefaults, onMounted, ref, watch  } from 'vue';
 
 const props = withDefaults(defineProps<{
   value?: number;
@@ -23,11 +24,14 @@ const props = withDefaults(defineProps<{
     thousand?: string;
     decimal?: string;
     precision?: string;
-  },
+  };
+  modalVisible?: boolean;
+  placeholder?: string;
 }>(), {
   value: 0,
   min: 0,
   max: 999999999999,
+  modalVisible: true,
 });
 const emits = defineEmits(['change']);
 
@@ -83,6 +87,13 @@ const handleBlur = () => {
 
 onMounted(() => {
   setValue(props.value);
+});
+watch(() => props.modalVisible, () => {
+  if (!props.modalVisible) {
+    iValue.value = -1;
+  } else {
+    setValue(props.value);
+  }
 });
 </script>
 

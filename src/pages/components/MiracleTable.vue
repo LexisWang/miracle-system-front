@@ -49,7 +49,16 @@
                   <el-icon>
                     <component :is="item.icon"/>
                   </el-icon>
-                  <span @click="item.callback(row)">{{ item.name }}</span>
+                  <span
+                    v-if="!item.isConfirm"
+                    @click="item.callback(row)">{{ item.name }}
+                  </span>
+                  <miracle-popover
+                    v-else :text="item.name || switchText(row)"
+                    :title="confirmTitle(row, item.confirmType)"
+                    :is-delete="item.confirmType === 'delete'"
+                    @confirm-callback="(remark) => item.callback({ row, remark })"
+                  />
                 </el-dropdown-item>
               </el-dropdown-menu>
             </template>
@@ -66,23 +75,28 @@
 
 <script lang="ts" setup="">
 //a.公共引入
-import { defineProps, ref, withDefaults } from 'vue';
+import { ref, withDefaults } from 'vue';
 import { Expand } from '@element-plus/icons-vue';
 //b.自定义类型引入
 import type { ListColumnType, OperateMenuType } from "@/type/base-type";
 //c.自定义工具引入
 import { setCellColor } from '@/utils/transform';
+import MiraclePopover from '@/pages/components/MiraclePopover.vue';
 
 //1.父组件参数
-withDefaults(defineProps<{
+const props = withDefaults(defineProps<{
   tableClass?: string;
   tableLoading?: boolean;
   tableColumns: ListColumnType[];
   listData: any[];
   operateMenus?: OperateMenuType[];
   selectOpts?: any;
+  rowMainProp?: string;
+  rowStatusProp?: string;
 }>(), {
-  tableLoading: () => false
+  tableLoading: () => false,
+  rowMainProp: 'name',
+  rowStatusProp: 'status',
 })
 
 //3.该组件上下文参数
@@ -93,6 +107,32 @@ const ctx = ref<object>({
     { name: '王五', age: 33 },
   ]
 });
+
+//设置confirmTitle
+const confirmTitle: (row: any, confirmType: string) => string = (row, confirmType) => {
+  if (confirmType === 'switch') {
+    if (row[props.rowStatusProp] === 1) {
+      return `确认禁用(${row[props.rowMainProp]})吗?`;
+    } else {
+      return `确认启用(${row[props.rowMainProp]})吗?`;
+    }
+  } else if (confirmType === 'reset') {
+    return `确认重置(${row[props.rowMainProp]})数据吗?`;
+  } else if (confirmType === 'delete') {
+    return `确认删除(${row[props.rowMainProp]})数据吗?`;
+  } else {
+    return '';
+  }
+};
+
+//设置`启/禁用`文字
+const switchText = (row: any) => {
+  if (row[props.rowStatusProp] === 1) {
+    return '禁用';
+  } else {
+    return '启用'
+  }
+};
 
 </script>
 

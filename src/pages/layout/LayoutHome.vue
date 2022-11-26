@@ -59,6 +59,6 @@ watch(() => router.currentRoute.value.path, (newPath) => {
 
 .el-main {
   height: calc(100vh - 80px);
-  padding: 5px;
+  //padding: 5px;
 }
 </style>

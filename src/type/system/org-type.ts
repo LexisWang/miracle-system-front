@@ -1,3 +1,10 @@
+export interface OrgOptsType {
+  value: number;
+  label: string;
+  scopeKey: string;
+  children?: OrgOptsType[];
+}
+
 export interface OrgListType {
   id?: number;
   name?: string;
@@ -12,6 +19,7 @@ export interface OrgListType {
   sortNo?: number;
   scopeKey?: string;
   tierLevel?: number;
+  pIdArr?: number[];
   pId?: number;
   pIds?: string;
   createTime?: Date | string;
@@ -35,10 +43,9 @@ export interface OrgSearchType {
   current: number;
   orgName?: string;
   orgCode?: string;
-  orgStatus?: number;
-  isLeaf?: number;
-  scopeKey?: number[];
-  address?: number;
-  createTime?: string;
-  orgCodes?: string;
+  orgStatus?: number[];
+  pid?: number;
+  createTimeStart?: number;
+  createTimeEnd?: number;
+  orgNames?: string;
 }

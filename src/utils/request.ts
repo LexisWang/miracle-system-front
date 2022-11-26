@@ -13,6 +13,7 @@ enum RES_CODE {
 //1.创建`axios`实例
 const ajaxNormal = axios.create({
   // baseURL: 'http://localhost:8888', // 使用代理，不需要该项
+  baseURL: 'dev-api', //开发环境为 `dev-api`, 发布环境为 `''`
   timeout: 300000,
   withCredentials: true,
   headers: {

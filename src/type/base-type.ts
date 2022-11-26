@@ -21,14 +21,14 @@ export interface FormRuleType {
   validator?: ValidatorFuncType;
 }
 
-export interface AddEditButtonType {
-  permission?: string;
-  onClick: () => void;
-}
-
 export interface ElPermissionType {
   name?: string;
   code?: number;
+}
+
+export interface AddEditButtonType {
+  permission?: ElPermissionType;
+  onClick: () => void;
 }
 
 export interface TagDataType {
@@ -78,12 +78,16 @@ export interface SearchColumnType {
   placeholder?: string;
   endTimeStr?: string;
   startTimeStr?: string;
-  addPermission?: string;
+  addPermission?: ElPermissionType;
   type: FormItemTypeEnum;
   options?: NumberOptionsTYpe;
   onChange?: (v: any) => void;
   onSelect?: (v: any) => void;
   onBlur?: (v: any) => void;
+  class?: string;
+  pickerOptions?: any;
+  format?: (v: any) => string;
+  children?: any;
 }
 
 export interface ListColumnType {
@@ -104,21 +108,23 @@ export interface ListColumnType {
 }
 
 export interface OperateMenuType {
-  name: string;
+  name?: string;
   icon: DefineComponent;
   key: string;
   callback?: (params?: any) => void;
+  isConfirm?: boolean;
+  confirmType?: 'switch' | 'reset' | 'delete';
   permission?: ElPermissionType;
-}
-
-export interface ListResponseType<T> {
-  success: boolean;
-  code: number;
-  msg: string;
-  data: T;
 }
 
 export interface SummaryMethodProps<T> {
   columns: TableColumnCtx<T>[];
   data: T[];
+}
+
+export interface NormalRespType<T> {
+  success: boolean;
+  code: number;
+  msg: string;
+  data: T;
 }

@@ -1,8 +1,8 @@
 import request from '@/utils/request';
 import type { AxiosResponse } from "axios";
-import type { ListResponseType } from "@/type/base-type";
+import type { NormalRespType } from "@/type/base-type";
 import type { LoginFormModel, LoginResDto } from "@/type/layout-type";
-import type { OrgPageDataType, OrgSearchType } from "@/type/organization-type";
+import type { OrgPageDataType, OrgSearchType } from "@/type/system/org-type";
 
 //1.用户登录
 export function staffLoginApi(data: LoginFormModel): Promise<AxiosResponse<LoginResDto>> {
@@ -11,9 +11,9 @@ export function staffLoginApi(data: LoginFormModel): Promise<AxiosResponse<Login
 }
 
 //2.获取分部组织列表
-export function orgListApi(searchParam: OrgSearchType): Promise<ListResponseType<OrgPageDataType>> {
-  // return request.post(`dev-api/system-mgr/sys-org/orgPageData`, searchParam);
-  return request.post(`/system/org/listData`, searchParam);
+export function orgListApi(searchParam: OrgSearchType): Promise<NormalRespType<OrgPageDataType>> {
+  return request.post(`system-mgr/sys-org/orgPageData`, searchParam);
+  // return request.post(`/system/org/listData`, searchParam);
 }
 
 //测试后端接口

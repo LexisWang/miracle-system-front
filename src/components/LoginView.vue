@@ -54,7 +54,7 @@ const rules = {
     { required: true, message: '请输入密码', trigger: 'blur' },
     { min: 6, max: 26, message: '密码长度在6~24之间', trigger: 'blur' },
   ]
-}
+};
 const submitForm = () => {
   // createPerson({ orgName: 'Miracle-', orgAge: 26, createTime: new Date().valueOf() }).then(res => {
   //   console.log(res);
