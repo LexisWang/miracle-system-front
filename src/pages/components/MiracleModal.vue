@@ -3,7 +3,7 @@
     :width="width + 'px'"
     :append-to-body="true"
     v-model="modalVisible"
-    custom-class="miracle-dialog"
+    class="miracle-dialog"
     :before-close="beforeClose"
     :title="modalTitle"
     :close-on-click-modal="false"
@@ -110,7 +110,7 @@
               :filterable="item.filterable"
               :placeholder="editing? item.placeholder || '请选择' : ''"
               :collapse-tags="item.collapseTags"
-              :disabled:disabled="!editing || item.disabled"
+              :disabled="!editing || item.disabled"
               :clearable="item.clearable"
               @change="item.onChange"
             >
@@ -232,7 +232,7 @@ const formRef = ref<FormInstance>();
 const defaultSpan = ref(8);
 const defaultLabel = ref(80);
 const defaultOffset = ref(0);
-const modalTitle = ref('新增');
+const modalTitle = ref();
 
 const getSuggestData = (key: string, qs: string, cb: (arg: any) => void) => {
   const suggestOpts = props.suggestOpts[key];
@@ -267,7 +267,7 @@ onUpdated(() => {
   } else if (props.editing && props.addEditData?.id) {
     modalTitle.value = props.title + `修改(${props.addEditData?.name})`;
   } else {
-    modalTitle.value = props.title + modalTitle.value;
+    modalTitle.value = props.title + '新增';
   }
 });
 </script>

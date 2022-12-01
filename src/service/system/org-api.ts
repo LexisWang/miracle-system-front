@@ -1,9 +1,9 @@
 import request from '@/utils/request';
-import type { NormalRespType } from "@/type/base-type";
-import type { OrgListType, OrgOptsType, OrgPageDataType, OrgSearchType } from "@/type/system/org-type";
+import type { NormalPageDataType, NormalRespType, TreeOptType } from "@/type/base-type";
+import type { OrgListType, OrgSearchType } from "@/type/system/org-type";
 
 //1.获取父级部门组织选项
-export function orgOptsData(): Promise<NormalRespType<OrgOptsType[]>> {
+export function orgOptsData(): Promise<NormalRespType<TreeOptType[]>> {
   return request.post(`/system-mgr/sys-org/orgOptsData`);
 }
 
@@ -28,7 +28,7 @@ export function orgUpdateData(data: OrgListType): Promise<NormalRespType<any>> {
 }
 
 //6.部门组织列表数据
-export function orgPageData(data: OrgSearchType): Promise<NormalRespType<OrgPageDataType>> {
+export function orgPageData(data: OrgSearchType): Promise<NormalRespType<NormalPageDataType<OrgListType>>> {
   return request.post(`/system-mgr/sys-org/orgPageData`, data);
 }
 

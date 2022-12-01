@@ -24,7 +24,7 @@
 import { reactive, ref } from "vue";
 import { ElMessage } from "element-plus";
 
-withDefaults(defineProps<{
+const props = withDefaults(defineProps<{
   title: string;
   text: string;
   isDelete?: boolean;
@@ -43,7 +43,7 @@ const onCancel = () => {
   visible.value = false;
 };
 const onConfirm = () => {
-  if (!formData.remark) {
+  if (props.isDelete && !formData.remark) {
     ElMessage.error("必须输入备注信息");
   } else {
     visible.value = false;

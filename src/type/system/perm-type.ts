@@ -1,20 +1,17 @@
-export interface OrgListType {
+export interface PermListType {
   id?: number;
   name?: string;
-  orgCode?: string;
-  orgName?: string;
-  orgDesc?: string;
-  address?: string;
-  contact?: string;
-  email?: string;
-  orgStatus?: number;
-  isLeaf?: number;
+  permCode?: string;
+  permName?: string;
+  permUri?: string;
+  permStatus?: number;
   sortNo?: number;
-  scopeKey?: string;
   tierLevel?: number;
+  globalSort?: number;
   pIdArr?: number[];
   pId?: number;
   pIds?: string;
+  permRemark?: string;
   createTime?: Date | string;
   updateTime?: Date | string;
   creatorId?: number;
@@ -25,14 +22,14 @@ export interface OrgListType {
   deleted?: boolean;
 }
 
-export interface OrgSearchType {
+export interface PermSearchType {
   size: number;
   current: number;
-  orgName?: string;
-  orgCode?: string;
-  orgStatus?: number[];
-  pid?: number[];
+  permCode?: string;
+  permName?: string;
+  permStatus?: number[];
+  pidCascade?: number[];
   createTimeStart?: number;
   createTimeEnd?: number;
-  orgNames?: string;
+  permNames?: string;
 }

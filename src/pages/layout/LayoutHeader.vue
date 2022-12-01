@@ -7,8 +7,11 @@
         </el-icon>
       </el-button>
       <el-breadcrumb :separator-icon="ArrowRight">
-        <el-breadcrumb-item v-for="menu in globalStore.currentMenu.filter(item => item.name !== 'home')" :to="menu.path"
-                            :key="menu.path">
+        <el-breadcrumb-item
+          v-for="menu in globalStore.currentMenu.filter(item => item.name !== 'home')"
+          :to="menu.path"
+          :key="menu.path"
+        >
           {{ menu.title }}
         </el-breadcrumb-item>
       </el-breadcrumb>
@@ -19,7 +22,7 @@
         <template #dropdown>
           <el-dropdown-menu>
             <el-dropdown-item>修改密码</el-dropdown-item>
-            <el-dropdown-item>退出登录</el-dropdown-item>
+            <el-dropdown-item @click="logoutHandler">退出登录</el-dropdown-item>
           </el-dropdown-menu>
         </template>
       </el-dropdown>
@@ -29,12 +32,17 @@
 </template>
 
 <script setup lang="ts">
+import { useRouter } from 'vue-router';
 import { useGlobalStore } from '@/stores/global';
 import { ArrowRight } from '@element-plus/icons-vue';
 
+const router = useRouter();
 const globalStore = useGlobalStore();
 const onChangeMenuCollapse = () => {
   globalStore.isCollapse = !globalStore.isCollapse;
+};
+const logoutHandler = () => {
+  router.replace({ path: '/login' });
 };
 </script>
 

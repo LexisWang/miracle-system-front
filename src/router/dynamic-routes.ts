@@ -36,6 +36,39 @@ const dynamicRoutes: RouteRecordRaw[] = [
             },
             component: () => import(/* webpackChunkName: "order" */ '@/pages/system-page/OrganizationView.vue'),
           },
+          {
+            path: 'permission',
+            name: 'permission',
+            meta: {
+              isShow: true,
+              title: '权限管理',
+              icon: 'lock',
+              parent: 'system',
+            },
+            component: () => import(/* webpackChunkName: "order" */ '@/pages/system-page/PermissionView.vue'),
+          },
+          {
+            path: 'menu',
+            name: 'menu',
+            meta: {
+              isShow: true,
+              title: '菜单管理',
+              icon: 'menu',
+              parent: 'system',
+            },
+            component: () => import(/* webpackChunkName: "order" */ '@/pages/system-page/MenuView.vue'),
+          },
+          {
+            path: 'button',
+            name: 'button',
+            meta: {
+              isShow: true,
+              title: '按钮管理',
+              icon: 'pointer',
+              parent: 'system',
+            },
+            component: () => import(/* webpackChunkName: "order" */ '@/pages/system-page/ButtonView.vue'),
+          },
         ]
       },
       {

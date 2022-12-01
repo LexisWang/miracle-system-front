@@ -9,7 +9,17 @@ const normalStatusOpts = [
   { value: 1, label: '启用', color: 'green' },
 ];
 
+const requestMethodOpts = [
+  { value: 'POST', label: 'POST' },
+  { value: 'PUT', label: 'PUT' },
+  { value: 'DELETE', label: 'DELETE' },
+  { value: 'GET', label: 'GET' },
+  { value: 'PATCH', label: 'PATCH' },
+  { value: 'OPTIONS', label: 'OPTIONS' },
+];
+
 export {
   binaryChoiceOpts,
   normalStatusOpts,
+  requestMethodOpts,
 };

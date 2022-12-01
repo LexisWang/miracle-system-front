@@ -65,8 +65,8 @@ const submitForm = () => {
       staffLoginApi(loginData).then(({ data }) => {
         const globalStore = useGlobalStore();
         globalStore.setLongRespData(data);
+        ElMessage.success("登录成功");
       });
-      ElMessage.success("登录成功");
     }
   });
 };

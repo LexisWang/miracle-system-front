@@ -4,12 +4,12 @@ import type { InternalRuleItem, ValidateOption, Value, Values } from "async-vali
 
 export type ValueTransType = (
     scope: { row: any; column: TableColumnCtx<any> },
-    options: OptType[],
+    options: BaseOptType[],
     type?: string) => string | undefined;
 
 export type DateTransType = (value: string, type: string) => string | undefined;
 
-export type ValidatorFuncType = (rule: InternalRuleItem, value: Value, callback: (error?: string | Error) => void, source: Values, options: ValidateOption) => void | Promise<void>;
+export type ValidatorFuncType = (rule: InternalRuleItem, value: Value, callback: (error?: string | Error) => void, source: Values, options: ValidateOption, extV?: number) => void | Promise<void>;
 
 export type FormItemTypeEnum = 'input' | 'select' | 'date-picker' | 'autocomplete' | 'cascade' | 'button'
     | 'textArea' | 'radio' | 'number';
@@ -49,10 +49,18 @@ export interface CascadeItemType {
   children?: CascadeItemType[];
 }
 
-export interface OptType {
+export interface BaseOptType {
   value: number | string | boolean;
   label: string;
   color?: string;
+  id?: number;
+}
+
+export interface TreeOptType {
+  value: number;
+  label: string;
+  scopeKey: string;
+  children?: TreeOptType[];
 }
 
 export interface NumberOptionsTYpe {
@@ -127,4 +135,10 @@ export interface NormalRespType<T> {
   code: number;
   msg: string;
   data: T;
+}
+
+export interface NormalPageDataType<T> {
+  total: number;
+  pages: number;
+  records: T[];
 }

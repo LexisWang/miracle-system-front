@@ -80,12 +80,13 @@ import type {
   AddEditButtonType,
   CascadeItemType,
   ListColumnType,
+  NormalPageDataType,
   OperateMenuType,
-  OptType,
+  BaseOptType,
   SearchColumnType,
   SuggestItemType
 } from "@/type/base-type";
-import type { OrgListType, OrgPageDataType, OrgSearchType } from "@/type/system/org-type";
+import type { OrgListType, OrgSearchType } from "@/type/system/org-type";
 //c.自定义工具引入
 import { dateToString, valueToLabel } from '@/utils/transform';
 import { binaryChoiceOpts, normalStatusOpts } from '@/utils/constant';
@@ -98,8 +99,8 @@ import { orgListApi } from "@/service/system-api";
 import { orgDeleteData } from "@/service/system/org-api";
 
 //1.1.各可筛选项数据
-const statusOpts = ref<OptType[]>();
-const isLeafOpts = ref<OptType[]>();
+const statusOpts = ref<BaseOptType[]>();
+const isLeafOpts = ref<BaseOptType[]>();
 const suggestAddress = ref<SuggestItemType[]>();
 const cascadeScopeKey = ref<CascadeItemType[]>();
 //1.2.本组件数据绑定
@@ -108,7 +109,7 @@ const tableInstance = ref<InstanceType<typeof MiracleTable>>();
 //1.2.2.搜索数据绑定
 const searchData = ref<OrgSearchType>({ current: 1, size: 15 });
 //1.2.3.表格数据绑定
-const tableData = reactive<OrgPageDataType>({ records: [], total: 0, pages: 0 })
+const tableData = reactive<NormalPageDataType<OrgListType>>({ records: [], total: 0, pages: 0 })
 //1.2.4.加载状态相关
 const tableLoading = ref(false);
 //1.3.1.新增和编辑
@@ -137,14 +138,14 @@ const formRules = {
 };
 const footerButton: AddEditButtonType[] = [
   {
-    permission: '11111',
+    permission: { name: '', code: 0 },
     onClick: () => {
       addEditModal.value = false;
       addEditEditing.value = false;
     },
   },
   {
-    permission: '22222',
+    permission: { name: '', code: 0 },
     onClick: () => {
       addEditModal.value = false;
       addEditEditing.value = false;

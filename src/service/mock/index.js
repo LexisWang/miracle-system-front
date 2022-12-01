@@ -16,6 +16,7 @@ export default [{
                 name: 'system',
                 children: [
                   { name: 'organization' },
+                  { name: 'permission' },
                 ]
               },
               {

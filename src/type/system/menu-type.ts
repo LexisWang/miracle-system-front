@@ -1,20 +1,18 @@
-export interface OrgListType {
+export interface MenuListType {
   id?: number;
   name?: string;
-  orgCode?: string;
-  orgName?: string;
-  orgDesc?: string;
-  address?: string;
-  contact?: string;
-  email?: string;
-  orgStatus?: number;
-  isLeaf?: number;
+  menuCode?: string;
+  menuName?: string;
+  menuUrl?: string;
+  menuIcon?: string;
+  menuStatus?: number;
   sortNo?: number;
-  scopeKey?: string;
   tierLevel?: number;
+  globalSort?: number;
   pIdArr?: number[];
   pId?: number;
   pIds?: string;
+  menuRemark?: string;
   createTime?: Date | string;
   updateTime?: Date | string;
   creatorId?: number;
@@ -25,14 +23,14 @@ export interface OrgListType {
   deleted?: boolean;
 }
 
-export interface OrgSearchType {
+export interface MenuSearchType {
   size: number;
   current: number;
-  orgName?: string;
-  orgCode?: string;
-  orgStatus?: number[];
-  pid?: number[];
+  menuCode?: string;
+  menuName?: string;
+  menuStatus?: number[];
+  pidCascade?: number[];
   createTimeStart?: number;
   createTimeEnd?: number;
-  orgNames?: string;
+  menuNames?: string;
 }

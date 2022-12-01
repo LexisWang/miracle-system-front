@@ -1,8 +1,8 @@
 import request from '@/utils/request';
 import type { AxiosResponse } from "axios";
-import type { NormalRespType } from "@/type/base-type";
+import type { NormalPageDataType, NormalRespType } from "@/type/base-type";
 import type { LoginFormModel, LoginResDto } from "@/type/layout-type";
-import type { OrgPageDataType, OrgSearchType } from "@/type/system/org-type";
+import type { OrgListType, OrgSearchType } from "@/type/system/org-type";
 
 //1.用户登录
 export function staffLoginApi(data: LoginFormModel): Promise<AxiosResponse<LoginResDto>> {
@@ -11,7 +11,7 @@ export function staffLoginApi(data: LoginFormModel): Promise<AxiosResponse<Login
 }
 
 //2.获取分部组织列表
-export function orgListApi(searchParam: OrgSearchType): Promise<NormalRespType<OrgPageDataType>> {
+export function orgListApi(searchParam: OrgSearchType): Promise<NormalRespType<NormalPageDataType<OrgListType>>> {
   return request.post(`system-mgr/sys-org/orgPageData`, searchParam);
   // return request.post(`/system/org/listData`, searchParam);
 }

@@ -8,7 +8,7 @@
       :data="listData"
       height="100%"
     >
-      <el-table-column label="序号" type="index" width="52" :fixed="'left'"/>
+      <el-table-column label="序号" type="index" width="54" :fixed="'left'"/>
       <template v-for="item in tableColumns" :key="item.prop">
         <el-table-column
           v-if="item.enumTrans"

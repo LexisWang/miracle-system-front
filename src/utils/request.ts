@@ -55,7 +55,10 @@ ajaxNormal.interceptors.response.use(
         } else {
           const code = resData?.code;
           if (code && code !== 200) {
-            const msg = resData.msg || RES_CODE[code] || RES_CODE[500];
+            let msg = resData.msg || RES_CODE[code] || RES_CODE[500];
+            if (resData.data) {
+              msg = JSON.stringify(resData.data);
+            }
             ElMessage.error(msg);
             return Promise.reject(resData);
           } else if (code && code === 200) {
