@@ -39,7 +39,7 @@
             @size-change="searchCallback"
             @current-change="searchCallback"
             v-model:page-size="searchData.size"
-            :page-sizes="[5, 10, 15, 20, 50, 100]"
+            :page-sizes="[15, 30, 50, 100]"
             v-model:current-page="searchData.current"
             :layout="'total, sizes, prev, pager, next, jumper'"
           />
@@ -113,7 +113,7 @@ const searchColumns: SearchColumnType[] = [
     endTimeStr: '新建时间(结束)'
   },
   { type: 'input', prop: 'permNames', placeholder: '名称(多个)', span: 12 },
-  { type: 'button', prop: 'operate', placeholder: '', addPermission: { name: 'perm-add', code: 1002001 } },
+  { type: 'button', prop: 'operate', placeholder: '', addPermission: { code: '1-2-1-1', name: 'perm-add' } },
 ];
 const otherOperates: OperateMenuType[] = [
   {
@@ -123,7 +123,7 @@ const otherOperates: OperateMenuType[] = [
     callback: () => {
       permExportData({ ...searchData.value, current: 1, size: 999999 }).then();
     },
-    permission: { name: 'export-perm-all', code: 1002002 },
+    permission: { code: '1-2-1-2', name: 'export-perm-all'},
   },
   {
     name: '导出(本页)',
@@ -132,7 +132,7 @@ const otherOperates: OperateMenuType[] = [
     callback: () => {
       permExportData(searchData.value).then();
     },
-    permission: { name: 'export-perm-page', code: 1002003 },
+    permission: { code: '1-2-1-3', name: 'export-perm-page' },
   },
 ];
 const searchData = ref<PermSearchType>({ current: 1, size: 15 });
@@ -181,7 +181,7 @@ const operateMenus: OperateMenuType[] = [
       addEditModal.value = true;
       addEditEditing.value = false;
     },
-    permission: { name: 'perm-detail', code: 1002101 },
+    permission: { code: '1-2-2-1', name: 'perm-detail' },
   },
   {
     name: '修改',
@@ -194,7 +194,7 @@ const operateMenus: OperateMenuType[] = [
       addEditModal.value = true;
       addEditEditing.value = true;
     },
-    permission: { name: 'perm-update', code: 1002102 },
+    permission: { code: '1-2-2-2', name: 'perm-update' },
   },
   {
     icon: Switch,
@@ -204,7 +204,7 @@ const operateMenus: OperateMenuType[] = [
     callback: ({ row }) => {
       permUpdateData({ id: row.id, permStatus: row.permStatus === 1 ? 0 : 1 }).then(() => searchCallback());
     },
-    permission: { name: 'perm-switch-status', code: 1002103 },
+    permission: { code: '1-2-2-3', name: 'perm-switch-status' },
   },
   {
     name: '删除',
@@ -215,7 +215,7 @@ const operateMenus: OperateMenuType[] = [
     callback: ({ row, remark }) => {
       permDeleteData([row.id], remark).then(() => searchCallback());
     },
-    permission: { name: 'perm-delete', code: 1002104 },
+    permission: { code: '1-2-2-4', name: 'perm-delete' },
   },
 ];
 const tableData = reactive<NormalPageDataType<PermListType>>({ records: [], total: 0, pages: 0 })
@@ -272,14 +272,14 @@ const formRules = {
 };
 const footerButton: AddEditButtonType[] = [
   {
-    permission: { name: 'perm-cancel-submit', code: 1002201 },
+    permission: { code: '1-2-3-1', name: 'perm-cancel-submit' },
     onClick: () => {
       addEditModal.value = false;
       addEditEditing.value = false;
     },
   },
   {
-    permission: { name: 'perm-ensure-submit', code: 1002202 },
+    permission: { code: '1-2-3-2', name: 'perm-ensure-submit' },
     onClick: async () => {
       const { value: data } = addEditData
       const extraData: {

@@ -15,7 +15,7 @@
         />
         <el-select
           v-else-if="item.type === 'select'"
-          :multiple="item.multiple"
+          :multiple="item.multiple || true"
           :clearable="true"
           :collapse-tags="true"
           :collapse-tags-tooltip="true"

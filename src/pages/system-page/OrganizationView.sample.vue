@@ -41,7 +41,7 @@
           @size-change="searchCallback"
           @current-change="searchCallback"
           v-model:page-size="searchData.size"
-          :page-sizes="[5, 10, 15, 20, 50, 100]"
+          :page-sizes="[15, 30, 50, 100]"
           v-model:current-page="searchData.current"
           :layout="'total, sizes, prev, pager, next, jumper'"
         />

@@ -1,6 +1,12 @@
 import request from '@/utils/request';
 import type { NormalPageDataType, NormalRespType } from "@/type/base-type";
 import type { ButtonListType, ButtonSearchType } from "@/type/system/button-type";
+import type { TreeOptType } from "@/type/base-type";
+
+//1.获取按钮选项
+export function buttonOptsData(): Promise<NormalRespType<TreeOptType[]>> {
+  return request.post(`/system-mgr/sys-button/buttonOptsData`);
+}
 
 //2.校验按钮数据是否重复
 export function checkButtonExist(data: ButtonListType): Promise<NormalRespType<{ ok: boolean; msg: string }>> {

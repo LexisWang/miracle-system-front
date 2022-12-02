@@ -74,6 +74,7 @@
               v-model="addEditData[item.prop]"
               :placeholder="editing? item.placeholder || '请输入' : ''"
               v-else-if="item.type === 'input' || !item.type"
+              :clearable="item.clearable || true"
               @blur="item.onBlur"
               @change="item.onChange"
             />
@@ -89,6 +90,7 @@
               v-else-if="item.type === 'textArea'"
               type="textarea"
               :rows="item.rows"
+              :clearable="item.clearable || true"
               :placeholder="editing? item.placeholder || '请输入' : ''"
             />
             <!--输入日期-->
@@ -100,6 +102,7 @@
               :placeholder="item.placeholder"
               :value-format="item.format || 'yyyy-MM-dd'"
               :type="item.type"
+              :clearable="item.clearable || true"
               :picker-options="item.pickerOptions || {}"
             />
             <!--选择框 select-->
@@ -111,7 +114,7 @@
               :placeholder="editing? item.placeholder || '请选择' : ''"
               :collapse-tags="item.collapseTags"
               :disabled="!editing || item.disabled"
-              :clearable="item.clearable"
+              :clearable="item.clearable || true"
               @change="item.onChange"
             >
               <el-option
@@ -129,8 +132,9 @@
               :options="cascadeOpts[item.prop]"
               :disabled="!editing || item.disabled"
               :props="{checkStrictly: true, multiple: false}"
-              style="width: 100%"
               :placeholder="editing? item.placeholder || '请选择' : ''"
+              :clearable="item.clearable || true"
+              style="width: 100%"
             >
               <template #default="{ node, data }">
                 <span>{{ data.label }}</span>
@@ -158,6 +162,7 @@
                 class="input-autocomplete"
                 v-model="addEditData[item.prop]"
                 :fetch-suggestions="(qs, cb) => getSuggestData(item.prop, qs, cb)"
+                :clearable="item.clearable || true"
                 @select="item.onSelect"
               />
             </template>

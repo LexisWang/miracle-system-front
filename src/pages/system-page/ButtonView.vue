@@ -37,7 +37,7 @@
             @size-change="searchCallback"
             @current-change="searchCallback"
             v-model:page-size="searchData.size"
-            :page-sizes="[5, 10, 15, 20, 50, 100]"
+            :page-sizes="[15, 30, 50, 100]"
             v-model:current-page="searchData.current"
             :layout="'total, sizes, prev, pager, next, jumper'"
           />
@@ -97,7 +97,7 @@ const searchColumns: SearchColumnType[] = [
   { type: 'cascade', prop: 'menuId', placeholder: '所属菜单', span: 10 },
   { type: 'input', prop: 'sortNo', placeholder: '所属模块号' },
   { type: 'input', prop: 'names', placeholder: '名称(多个)', span: 12 },
-  { type: 'button', prop: 'operate', placeholder: '', addPermission: { name: 'button-add', code: 1004001 } },
+  { type: 'button', prop: 'operate', placeholder: '', addPermission: { code: '1-4-1-1', name: 'button-add' } },
 ];
 const searchData = ref<ButtonSearchType>({ current: 1, size: 15 });
 const searchCallback = () => {
@@ -137,7 +137,7 @@ const operateMenus: OperateMenuType[] = [
       addEditModal.value = true;
       addEditEditing.value = false;
     },
-    permission: { name: 'button-detail', code: 1004101 },
+    permission: { code: '1-4-2-1', name: 'button-detail' },
   },
   {
     name: '修改',
@@ -149,7 +149,7 @@ const operateMenus: OperateMenuType[] = [
       addEditModal.value = true;
       addEditEditing.value = true;
     },
-    permission: { name: 'button-update', code: 1004102 },
+    permission: { code: '1-4-2-2', name: 'button-update' },
   },
   {
     name: '删除',
@@ -160,7 +160,7 @@ const operateMenus: OperateMenuType[] = [
     callback: ({ row }) => {
       buttonDeleteData([row.id]).then(() => searchCallback());
     },
-    permission: { name: 'button-delete', code: 1004103 },
+    permission: { code: '1-4-2-3', name: 'button-delete' },
   },
 ];
 const tableData = reactive<NormalPageDataType<ButtonListType>>({ records: [], total: 0, pages: 0 })
@@ -180,25 +180,28 @@ const displayData: SearchColumnType[] = [
     onChange: (v) => addEditData.value!.sortNo = v,
     span: 11
   },
-  {
-    prop: 'code',
-    label: '代码',
-    type: 'number',
-    options: { symbol: '', precision: '0' },
-    onChange: (v) => addEditData.value!.code = v,
-    span: 11,
-  },
+  { prop: 'code', label: '代码:', type: 'input', span: 11 },
   { prop: 'name', label: '名称:', type: 'input', span: 11 },
 ];
 const formRules = {
   code: [
     { required: true, message: '请输入代码', trigger: 'blur' },
-    { validator: (r: any, v: any, c: any, valida: any, o: any) => buttonCodeCheck(r, v, c, valida, o, addEditData.value?.id), trigger: 'blur' },
+    {
+      validator: (r: any, v: any, c: any, valida: any, o: any) => buttonCodeCheck(r, v, c, valida, o, {
+        id: addEditData.value?.id,
+        menuId: getMenuId()
+      }), trigger: 'blur'
+    },
   ],
   name: [
     { required: true, message: '请输入名称', trigger: 'blur' },
     { min: 4, max: 32, message: '名称长度4~32之间', trigger: 'blur' },
-    { validator: (r: any, v: any, c: any, valida: any, o: any) => buttonNameCheck(r, v, c, valida, o, addEditData.value?.id), trigger: 'blur' },
+    {
+      validator: (r: any, v: any, c: any, valida: any, o: any) => buttonNameCheck(r, v, c, valida, o, {
+        id: addEditData.value?.id,
+        menuId: getMenuId()
+      }), trigger: 'blur'
+    },
   ],
   menuIdArr: [
     { required: true, message: '请选择所属菜单', trigger: 'blur' },
@@ -209,14 +212,14 @@ const formRules = {
 };
 const footerButton: AddEditButtonType[] = [
   {
-    permission: { name: 'button-cancel-submit', code: 1004201 },
+    permission: { code: '1-4-3-1', name: 'button-cancel-submit' },
     onClick: () => {
       addEditModal.value = false;
       addEditEditing.value = false;
     },
   },
   {
-    permission: { name: 'button-ensure-submit', code: 1004202 },
+    permission: { code: '1-4-3-2', name: 'button-ensure-submit' },
     onClick: async () => {
       const { value: data } = addEditData
       const extraData: {
@@ -246,6 +249,10 @@ const footerButton: AddEditButtonType[] = [
     },
   },
 ];
+const getMenuId = () => {
+  const { menuIdArr } = addEditData.value!;
+  return menuIdArr?.[menuIdArr?.length - 1];
+};
 
 //生命周函数
 onMounted(() => {

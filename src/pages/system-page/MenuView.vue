@@ -39,7 +39,7 @@
             @size-change="searchCallback"
             @current-change="searchCallback"
             v-model:page-size="searchData.size"
-            :page-sizes="[5, 10, 15, 20, 50, 100]"
+            :page-sizes="[15, 30, 50, 100]"
             v-model:current-page="searchData.current"
             :layout="'total, sizes, prev, pager, next, jumper'"
           />
@@ -113,7 +113,7 @@ const searchColumns: SearchColumnType[] = [
     endTimeStr: '新建时间(结束)'
   },
   { type: 'input', prop: 'menuNames', placeholder: '名称(多个)', span: 12 },
-  { type: 'button', prop: 'operate', placeholder: '', addPermission: { name: 'menu-add', code: 1003001 } },
+  { type: 'button', prop: 'operate', placeholder: '', addPermission: { code: '1-3-1-1', name: 'menu-add' } },
 ];
 const otherOperates: OperateMenuType[] = [
   {
@@ -123,7 +123,7 @@ const otherOperates: OperateMenuType[] = [
     callback: () => {
       menuExportData({ ...searchData.value, current: 1, size: 999999 }).then();
     },
-    permission: { name: 'export-menu-all', code: 1003002 },
+    permission: { code: '1-3-1-2', name: 'export-menu-all' },
   },
   {
     name: '导出(本页)',
@@ -132,7 +132,7 @@ const otherOperates: OperateMenuType[] = [
     callback: () => {
       menuExportData(searchData.value).then();
     },
-    permission: { name: 'export-menu-page', code: 1003003 },
+    permission: { code: '1-3-1-3', name: 'export-menu-page' },
   },
 ];
 const searchData = ref<MenuSearchType>({ current: 1, size: 15 });
@@ -181,7 +181,7 @@ const operateMenus: OperateMenuType[] = [
       addEditModal.value = true;
       addEditEditing.value = false;
     },
-    permission: { name: 'menu-detail', code: 1003101 },
+    permission: { code: '1-3-2-1', name: 'menu-detail' },
   },
   {
     name: '修改',
@@ -194,7 +194,7 @@ const operateMenus: OperateMenuType[] = [
       addEditModal.value = true;
       addEditEditing.value = true;
     },
-    permission: { name: 'menu-update', code: 1003102 },
+    permission: { code: '1-3-2-2', name: 'menu-update' },
   },
   {
     icon: Switch,
@@ -204,7 +204,7 @@ const operateMenus: OperateMenuType[] = [
     callback: ({ row }) => {
       menuUpdateData({ id: row.id, menuStatus: row.menuStatus === 1 ? 0 : 1 }).then(() => searchCallback());
     },
-    permission: { name: 'menu-switch-status', code: 1003103 },
+    permission: { code: '1-3-2-3', name: 'menu-switch-status' },
   },
   {
     name: '删除',
@@ -215,7 +215,7 @@ const operateMenus: OperateMenuType[] = [
     callback: ({ row, remark }) => {
       menuDeleteData([row.id], remark).then(() => searchCallback());
     },
-    permission: { name: 'menu-delete', code: 1003104 },
+    permission: { code: '1-3-2-4', name: 'menu-delete' },
   },
 ];
 const tableData = reactive<NormalPageDataType<MenuListType>>({ records: [], total: 0, pages: 0 })
@@ -272,14 +272,14 @@ const formRules = {
 };
 const footerButton: AddEditButtonType[] = [
   {
-    permission: { name: 'menu-cancel-submit', code: 1003201 },
+    permission: { code: '1-3-3-1', name: 'menu-cancel-submit' },
     onClick: () => {
       addEditModal.value = false;
       addEditEditing.value = false;
     },
   },
   {
-    permission: { name: 'menu-ensure-submit', code: 1003202 },
+    permission: { code: '1-3-3-2', name: 'menu-ensure-submit' },
     onClick: async () => {
       const { value: data } = addEditData
       const extraData: {

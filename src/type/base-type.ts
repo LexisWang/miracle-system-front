@@ -9,7 +9,7 @@ export type ValueTransType = (
 
 export type DateTransType = (value: string, type: string) => string | undefined;
 
-export type ValidatorFuncType = (rule: InternalRuleItem, value: Value, callback: (error?: string | Error) => void, source: Values, options: ValidateOption, extV?: number) => void | Promise<void>;
+export type ValidatorFuncType = (rule: InternalRuleItem, value: Value, callback: (error?: string | Error) => void, source: Values, options: ValidateOption, extV?: any) => void | Promise<void>;
 
 export type FormItemTypeEnum = 'input' | 'select' | 'date-picker' | 'autocomplete' | 'cascade' | 'button'
     | 'textArea' | 'radio' | 'number';
@@ -22,8 +22,8 @@ export interface FormRuleType {
 }
 
 export interface ElPermissionType {
+  code?: string;
   name?: string;
-  code?: number;
 }
 
 export interface AddEditButtonType {
@@ -59,7 +59,7 @@ export interface BaseOptType {
 export interface TreeOptType {
   value: number;
   label: string;
-  scopeKey: string;
+  scopeKey?: string;
   children?: TreeOptType[];
 }
 

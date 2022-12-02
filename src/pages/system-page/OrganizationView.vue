@@ -39,7 +39,7 @@
             @size-change="searchCallback"
             @current-change="searchCallback"
             v-model:page-size="searchData.size"
-            :page-sizes="[5, 10, 15, 20, 50, 100]"
+            :page-sizes="[15, 30, 50, 100]"
             v-model:current-page="searchData.current"
             :layout="'total, sizes, prev, pager, next, jumper'"
           />
@@ -109,7 +109,7 @@ const searchColumns: SearchColumnType[] = [
     endTimeStr: '新建时间(结束)'
   },
   { type: 'input', prop: 'orgNames', placeholder: '名称(多个)', span: 12 },
-  { type: 'button', prop: 'operate', placeholder: '', addPermission: { name: 'org-add', code: 1001001 } },
+  { type: 'button', prop: 'operate', placeholder: '', addPermission: { code: '1-1-1-1', name: 'org-add' } },
 ];
 const otherOperates: OperateMenuType[] = [
   {
@@ -119,7 +119,7 @@ const otherOperates: OperateMenuType[] = [
     callback: () => {
       orgExportData({ ...searchData.value, current: 1, size: 999999 }).then();
     },
-    permission: { name: 'export-org-all', code: 1001002 },
+    permission: { code: '1-1-1-2', name: 'export-org-all' },
   },
   {
     name: '导出(本页)',
@@ -128,7 +128,7 @@ const otherOperates: OperateMenuType[] = [
     callback: () => {
       orgExportData(searchData.value).then();
     },
-    permission: { name: 'export-org-page', code: 1001003 },
+    permission: { code: '1-1-1-3', name: 'export-org-page' },
   },
 ];
 const searchData = ref<OrgSearchType>({ current: 1, size: 15 });
@@ -177,7 +177,7 @@ const operateMenus: OperateMenuType[] = [
       addEditModal.value = true;
       addEditEditing.value = false;
     },
-    permission: { name: 'org-detail', code: 1001101 },
+    permission: { code: '1-1-2-1', name: 'org-detail' },
   },
   {
     name: '修改',
@@ -190,7 +190,7 @@ const operateMenus: OperateMenuType[] = [
       addEditModal.value = true;
       addEditEditing.value = true;
     },
-    permission: { name: 'org-update', code: 1001102 },
+    permission: { code: '1-1-2-2', name: 'org-update' },
   },
   {
     icon: Switch,
@@ -200,7 +200,7 @@ const operateMenus: OperateMenuType[] = [
     callback: ({ row }) => {
       orgUpdateData({ id: row.id, orgStatus: row.orgStatus === 1 ? 0 : 1 }).then(() => searchCallback());
     },
-    permission: { name: 'org-switch-status', code: 1001103 },
+    permission: { code: '1-1-2-3', name: 'org-switch-status' },
   },
   {
     name: '删除',
@@ -211,7 +211,7 @@ const operateMenus: OperateMenuType[] = [
     callback: ({ row, remark }) => {
       orgDeleteData([row.id], remark).then(() => searchCallback());
     },
-    permission: { name: 'org-delete', code: 1001104 },
+    permission: { code: '1-1-2-4', name: 'org-delete' },
   },
 ];
 const tableData = reactive<NormalPageDataType<OrgListType>>({ records: [], total: 0, pages: 0 })
@@ -263,14 +263,14 @@ const formRules = {
 };
 const footerButton: AddEditButtonType[] = [
   {
-    permission: { name: 'org-cancel-submit', code: 1001201 },
+    permission: { code: '1-1-3-1', name: 'org-cancel-submit' },
     onClick: () => {
       addEditModal.value = false;
       addEditEditing.value = false;
     },
   },
   {
-    permission: { name: 'org-ensure-submit', code: 1001202 },
+    permission: { code: '1-1-3-2', name: 'org-ensure-submit' },
     onClick: async () => {
       const { value: data } = addEditData
       const extraData: {
