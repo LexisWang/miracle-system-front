@@ -21,8 +21,8 @@ const filterRoutesByBackendRoutes: (dynamicRoutes: RouteRecordRaw[], backendRout
 };
 
 //添加动态路由
-export default function addDynamicRoutes(permMenus: BackendRoute[]) {
-  const backDynamicRoutes = filterRoutesByBackendRoutes(dynamicRoutes, permMenus);
+export default function addDynamicRoutes(roleMenus: BackendRoute[]) {
+  const backDynamicRoutes = filterRoutesByBackendRoutes(dynamicRoutes, roleMenus);
   backDynamicRoutes.forEach(item => {
     router.addRoute(item);
   });

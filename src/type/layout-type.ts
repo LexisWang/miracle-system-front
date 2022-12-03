@@ -1,4 +1,4 @@
-import type { TagDataType } from "@/type/base-type";
+import type { ElPermissionType, TagDataType } from "@/type/base-type";
 
 export interface LoginFormModel {
   username: string;
@@ -13,7 +13,8 @@ export interface BackendRoute {
 
 export interface LoginResDto {
   nickname?: string;
-  permMenus?: BackendRoute[];
+  roleMenus?: BackendRoute[];
+  roleButtons?: ElPermissionType[];
   jwtToken?: string;
 }
 

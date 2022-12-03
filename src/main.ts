@@ -53,13 +53,13 @@ const globalStore = useGlobalStore();
 router.beforeEach(async (to, from, next) => {
     const loginStateData = globalStore.loginData;
     const jwtToken = loginStateData.jwtToken;
-    const permMenus = loginStateData.permMenus;
+    const roleMenus = loginStateData.roleMenus;
 
     if (!jwtToken && to.path !== '/login') {
         globalStore.nextPath = to.path;
         next({ path: '/login' });
-    } else if (router.getRoutes().length === 4 && permMenus) {
-        addDynamicRoutes(permMenus);
+    } else if (router.getRoutes().length === 4 && roleMenus) {
+        addDynamicRoutes(roleMenus);
         next({ path: to.path, replace: true });
     } else if (router.hasRoute(to.name!)) {
         next();

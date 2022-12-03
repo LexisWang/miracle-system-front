@@ -68,7 +68,7 @@
           >
             新增
           </el-button>
-          <el-button type="warning" v-if="otherOperates">
+          <el-button type="warning" v-if="otherOperates" v-permission="otherOperatesPerm">
             <el-dropdown trigger="click">
               <el-icon size="large">
                 <MoreFilled/>
@@ -98,7 +98,7 @@
 import { ref } from 'vue';
 import { MoreFilled } from '@element-plus/icons-vue';
 //b.自定义类型引入
-import type { OperateMenuType, SearchColumnType } from "@/type/base-type";
+import type { ElPermissionType, OperateMenuType, SearchColumnType } from "@/type/base-type";
 
 //1.各可筛选项数据
 //1.1父组件参数
@@ -106,6 +106,7 @@ const props = defineProps<{
   searchData: any;
   searchColumn: SearchColumnType[];
   otherOperates?: OperateMenuType[];
+  otherOperatesPerm?: ElPermissionType
   selectOpts?: any;
   cascadeOpts?: any;
   suggestOpts?: any;

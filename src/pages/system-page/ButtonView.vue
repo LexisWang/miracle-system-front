@@ -22,6 +22,7 @@
         :table-columns="tableColumns"
         :list-data="records"
         :operate-menus="operateMenus"
+        :operate-perm="{code: '1-4-2', name: 'button-table'}"
         :select-opts="{
         menuStatus: statusOpts,
         isLeaf: isLeafOpts,

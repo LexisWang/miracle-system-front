@@ -80,6 +80,17 @@ const dynamicRoutes: RouteRecordRaw[] = [
             },
             component: () => import(/* webpackChunkName: "order" */ '@/pages/system-page/RoleView.vue'),
           },
+          {
+            path: 'staff',
+            name: 'staff',
+            meta: {
+              isShow: true,
+              title: '职员管理',
+              icon: 'user',
+              parent: 'system',
+            },
+            component: () => import(/* webpackChunkName: "order" */ '@/pages/system-page/StaffView.vue'),
+          },
         ]
       },
       {

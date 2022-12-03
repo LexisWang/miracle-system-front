@@ -7,7 +7,7 @@ export default [{
       data: {
         nickname: 'Miracle-',
         jwtToken: 'iweoiriweiwioerw',
-        permMenus: [
+        roleMenus: [
           {
             name: 'home',
             children: [

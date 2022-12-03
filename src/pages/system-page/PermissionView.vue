@@ -5,6 +5,7 @@
         :search-column="searchColumns"
         :search-data="searchData"
         :other-operates="otherOperates"
+        :other-operates-perm="{code: '1-2-1', name: 'perm-search'}"
         :select-opts="{
           permStatus: statusOpts,
         }"
@@ -23,6 +24,7 @@
         :table-columns="tableColumns"
         :list-data="records"
         :operate-menus="operateMenus"
+        :operate-perm="{code: '1-2-2', name: 'perm-table'}"
         :select-opts="{
         permStatus: statusOpts,
         isLeaf: isLeafOpts,

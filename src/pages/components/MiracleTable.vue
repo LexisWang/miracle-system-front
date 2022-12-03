@@ -37,7 +37,7 @@
           :min-width="item.width"
         />
       </template>
-      <el-table-column label="操作" align="center" width="60" :fixed="'right'">
+      <el-table-column label="操作" align="center" width="60" :fixed="'right'" v-permission="operatePerm">
         <template #default="{row}">
           <el-dropdown trigger="click">
             <el-icon @click.stop>
@@ -46,19 +46,23 @@
             <template #dropdown>
               <el-dropdown-menu>
                 <el-dropdown-item v-for="item in operateMenus" :key="item.key">
-                  <el-icon>
-                    <component :is="item.icon"/>
-                  </el-icon>
-                  <span
-                    v-if="!item.isConfirm"
-                    @click="item.callback(row)">{{ item.name }}
-                  </span>
-                  <miracle-popover
-                    v-else :text="item.name || switchText(row)"
-                    :title="confirmTitle(row, item.confirmType)"
-                    :is-delete="item.confirmType === 'delete'"
-                    @confirm-callback="(remark) => item.callback({ row, remark })"
-                  />
+                  <div v-permission="item.permission">
+                    <el-icon>
+                      <component :is="item.icon"/>
+                    </el-icon>
+                    <span
+                      v-if="!item.isConfirm"
+                      @click="item.callback(row)"
+                    >
+                      {{ item.name }}
+                    </span>
+                    <miracle-popover
+                      v-else :text="item.name || switchText(row)"
+                      :title="confirmTitle(row, item.confirmType)"
+                      :is-delete="item.confirmType === 'delete'"
+                      @confirm-callback="(remark) => item.callback({ row, remark })"
+                    />
+                  </div>
                 </el-dropdown-item>
               </el-dropdown-menu>
             </template>
@@ -82,6 +86,7 @@ import type { ListColumnType, OperateMenuType } from "@/type/base-type";
 //c.自定义工具引入
 import { setCellColor } from '@/utils/transform';
 import MiraclePopover from '@/pages/components/MiraclePopover.vue';
+import type { ElPermissionType } from "@/type/base-type";
 
 //1.父组件参数
 const props = withDefaults(defineProps<{
@@ -90,6 +95,7 @@ const props = withDefaults(defineProps<{
   tableColumns: ListColumnType[];
   listData: any[];
   operateMenus?: OperateMenuType[];
+  operatePerm?: ElPermissionType;
   selectOpts?: any;
   rowMainProp?: string;
   rowStatusProp?: string;
