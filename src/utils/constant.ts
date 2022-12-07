@@ -18,8 +18,19 @@ const requestMethodOpts = [
   { value: 'OPTIONS', label: 'OPTIONS' },
 ];
 
+const roleCategoryOpts = [
+  { value: 1, label: '开发' },
+  { value: 5, label: '业务' },
+  { value: 10, label: '关务' },
+  { value: 15, label: '操作' },
+  { value: 20, label: '仓务' },
+  { value: 25, label: '质检' },
+  { value: 30, label: '财务' },
+];
+
 export {
   binaryChoiceOpts,
   normalStatusOpts,
   requestMethodOpts,
+  roleCategoryOpts,
 };

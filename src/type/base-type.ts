@@ -96,6 +96,7 @@ export interface SearchColumnType {
   pickerOptions?: any;
   format?: (v: any) => string;
   children?: any;
+  hide?: boolean;
 }
 
 export interface ListColumnType {
@@ -121,7 +122,7 @@ export interface OperateMenuType {
   key: string;
   callback?: (params?: any) => void;
   isConfirm?: boolean;
-  confirmType?: 'switch' | 'reset' | 'delete';
+  confirmType?: 'switch' | 'resetPwd' | 'delete';
   permission?: ElPermissionType;
 }
 

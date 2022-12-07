@@ -1,5 +1,7 @@
 import axios from 'axios';
 import { ElMessage } from "element-plus";
+import router from '@/router';
+import { useGlobalStore } from '@/stores/global';
 
 enum RES_CODE {
   "操作成功" = 200,
@@ -23,8 +25,9 @@ const ajaxNormal = axios.create({
 //2.请求拦截
 ajaxNormal.interceptors.request.use(
     config => {
+      const globalStore = useGlobalStore();
       config.headers = config.headers || {};
-      config.headers.Authorization = localStorage.getItem('token') || '';
+      config.headers.Authorization = globalStore.loginData?.jwtToken;
       return config;
     },
     error => Promise.reject(error)
@@ -32,41 +35,17 @@ ajaxNormal.interceptors.request.use(
 //3.响应拦截
 ajaxNormal.interceptors.response.use(
     ({ data: resData, headers }) => { //@ts-ignore
-      if (headers?.getContentType?.() === 'application/json') {
+      // console.log('&&&&&&', headers?.getContentType())
+      if (headers?.getContentType?.().includes('json')) {
         if (resData instanceof Blob) {
           const reader = new FileReader();
           reader.readAsText(resData, 'utf-8');
           reader.onload = function () {
-            console.info(reader.result);
             resData = JSON.parse(reader.result as string);
-
-            const code = resData?.code;
-            if (code && code !== 200) {
-              const msg = resData.msg || RES_CODE[code] || RES_CODE[500];
-              ElMessage.error(msg);
-              return Promise.reject(resData);
-            } else if (code && code === 200) {
-              return resData;
-            } else {
-              ElMessage.error("返回结果中不存在对应的状态码");
-              return Promise.reject(resData);
-            }
+            return respCodeHandler(resData);
           };
         } else {
-          const code = resData?.code;
-          if (code && code !== 200) {
-            let msg = resData.msg || RES_CODE[code] || RES_CODE[500];
-            if (resData.data) {
-              msg = JSON.stringify(resData.data);
-            }
-            ElMessage.error(msg);
-            return Promise.reject(resData);
-          } else if (code && code === 200) {
-            return resData;
-          } else {
-            ElMessage.error("返回结果中不存在对应的状态码");
-            return Promise.reject(resData);
-          }
+          return respCodeHandler(resData);
         }
       } else {
         // 截取文件名，这里是后端返回了文件名+后缀，如果没有可以自己拼接
@@ -119,3 +98,25 @@ ajaxNormal.interceptors.response.use(
     });
 
 export default ajaxNormal;
+
+//对后台返回数据进行处理
+function respCodeHandler(resData: any): any {
+  const code = resData?.code;
+  if (!code) {
+    ElMessage.error("返回结果中不存在对应的状态码");
+    return Promise.reject(resData);
+  } else if (code === 401) {
+    const globalStore = useGlobalStore();
+    globalStore.$reset();
+    router.push('/login').then(() => ElMessage.error(resData.msg));
+  } else if (code === 200) {
+    return resData;
+  } else {
+    let msg = resData.msg || RES_CODE[code] || RES_CODE[500];
+    if (resData.data) {
+      msg = JSON.stringify(resData.data);
+    }
+    ElMessage.error(msg);
+    return Promise.reject(resData);
+  }
+}

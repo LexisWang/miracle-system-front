@@ -60,7 +60,7 @@
                       v-else :text="item.name || switchText(row)"
                       :title="confirmTitle(row, item.confirmType)"
                       :is-delete="item.confirmType === 'delete'"
-                      @confirm-callback="(remark) => item.callback({ row, remark })"
+                      @confirm-callback="(remark) => confirmCallback(item, row, remark)"
                     />
                   </div>
                 </el-dropdown-item>
@@ -87,6 +87,7 @@ import type { ListColumnType, OperateMenuType } from "@/type/base-type";
 import { setCellColor } from '@/utils/transform';
 import MiraclePopover from '@/pages/components/MiraclePopover.vue';
 import type { ElPermissionType } from "@/type/base-type";
+import { ElMessage } from "element-plus";
 
 //1.父组件参数
 const props = withDefaults(defineProps<{
@@ -122,8 +123,8 @@ const confirmTitle: (row: any, confirmType: string) => string = (row, confirmTyp
     } else {
       return `确认启用(${row[props.rowMainProp]})吗?`;
     }
-  } else if (confirmType === 'reset') {
-    return `确认重置(${row[props.rowMainProp]})数据吗?`;
+  } else if (confirmType === 'resetPwd') {
+    return `确认重置(${row[props.rowMainProp]})密码吗?`;
   } else if (confirmType === 'delete') {
     return `确认删除(${row[props.rowMainProp]})数据吗?`;
   } else {
@@ -138,6 +139,12 @@ const switchText = (row: any) => {
   } else {
     return '启用'
   }
+};
+
+//4.提交处理
+const confirmCallback = async (item: any, row: any, remark: any) => {
+  await item.callback({ row, remark });
+  ElMessage.success("操作成功");
 };
 
 </script>

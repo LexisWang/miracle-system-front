@@ -12,6 +12,7 @@ export interface BackendRoute {
 }
 
 export interface LoginResDto {
+  userid?: number;
   nickname?: string;
   roleMenus?: BackendRoute[];
   roleButtons?: ElPermissionType[];

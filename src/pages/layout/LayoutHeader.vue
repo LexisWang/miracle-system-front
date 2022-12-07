@@ -8,7 +8,7 @@
       </el-button>
       <el-breadcrumb :separator-icon="ArrowRight">
         <el-breadcrumb-item
-          v-for="menu in globalStore.currentMenu.filter(item => item.name !== 'home')"
+          v-for="menu in globalStore.currentMenu?.filter(item => item.name !== 'home')"
           :to="menu.path"
           :key="menu.path"
         >
@@ -21,13 +21,29 @@
         <img class="user-icon" src="../../assets/userIcon.png" alt="加载图片失败">
         <template #dropdown>
           <el-dropdown-menu>
-            <el-dropdown-item>修改密码</el-dropdown-item>
+            <el-dropdown-item @click="updPwdVisible = true">修改密码</el-dropdown-item>
             <el-dropdown-item @click="logoutHandler">退出登录</el-dropdown-item>
           </el-dropdown-menu>
         </template>
       </el-dropdown>
-
     </div>
+    <el-dialog
+      width="500"
+      title="修改密码"
+      :show-close="false"
+      v-model="updPwdVisible"
+      :close-on-click-modal="false"
+    >
+      <el-form :model="formData" label-width="80px">
+        <el-form-item label="新密码">
+          <el-input type="password" v-model="formData.newPwd"/>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button size="small" text @click="updPwdVisible = false">取消</el-button>
+        <el-button size="small" type="primary" @click="updatePwdHandler">确认</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -35,6 +51,10 @@
 import { useRouter } from 'vue-router';
 import { useGlobalStore } from '@/stores/global';
 import { ArrowRight } from '@element-plus/icons-vue';
+import { reactive, ref } from "vue";
+import { ElMessage } from "element-plus";
+import { staffUpdatePwd } from "@/service/system/staff-api"; //@ts-ignore
+import md5 from 'js-md5';
 
 const router = useRouter();
 const globalStore = useGlobalStore();
@@ -42,7 +62,22 @@ const onChangeMenuCollapse = () => {
   globalStore.isCollapse = !globalStore.isCollapse;
 };
 const logoutHandler = () => {
+  globalStore.$reset();
   router.replace({ path: '/login' });
+};
+
+const formData = reactive<{ id?: number; newPwd: string }>({ newPwd: '' });
+const updPwdVisible = ref<boolean>(false);
+const updatePwdHandler = () => {
+  if (!formData.newPwd) {
+    ElMessage.error("必须输入新密码");
+  } else {
+    staffUpdatePwd({ id: globalStore.loginData?.userid as number, newPwd: md5(formData.newPwd) })
+      .then(() => {
+        updPwdVisible.value = false;
+        formData.newPwd = '';
+      });
+  }
 };
 </script>
 

@@ -5,9 +5,9 @@
         :search-column="searchColumns"
         :search-data="searchData"
         :other-operates="otherOperates"
-        :other-operates-perm="{code: '1-5-1', name: 'role-search'}"
+        :other-operates-perm="{code: '1-6-1', name: 'role-search'}"
         :select-opts="{
-          roleStatus: statusOpts,
+          staffStatus: statusOpts,
         }"
         :cascade-opts="{
           orgId: orgIdOpts,
@@ -24,13 +24,13 @@
         :table-columns="tableColumns"
         :list-data="records"
         :operate-menus="operateMenus"
-        :operate-perm="{code: '1-5-2', name: 'role-table'}"
+        :operate-perm="{code: '1-6-2', name: 'role-table'}"
         :select-opts="{
-          roleStatus: statusOpts,
+          staffStatus: statusOpts,
           isLeaf: isLeafOpts,
         }"
-        row-main-prop="roleName"
-        row-status-prop="roleStatus"
+        row-main-prop="username"
+        row-status-prop="staffStatus"
       >
         <template #footer>
           <el-pagination
@@ -53,46 +53,20 @@
       :add-edit-data="addEditData"
       :display-data="displayData"
       :form-rules="formRules"
+      :select-opts="{
+        roleId: roleIdOpts,
+        superId: superIdOpts,
+      }"
       :cascade-opts="{
         orgIdArr: orgIdOpts,
       }"
       :radio-opts="{
-        roleStatus: statusOpts,
+        staffStatus: statusOpts,
         isLeaf: isLeafOpts,
       }"
       :footer-button="footerButton"
       :editing="addEditEditing"
     />
-    <el-dialog
-      width="500"
-      :title="authorizeTitle"
-      v-model="authorizeVisible"
-    >
-      <el-tree
-        ref="treeRef"
-        :data="authorizeData"
-        show-checkbox
-        node-key="value"
-        highlight-current
-        :check-strictly="checkStrictly"
-        :default-checked-keys="defaultCheckedData"
-      />
-      <template #footer>
-        <el-button
-          @click="authorizeVisible = false"
-          v-permission="{ code: '1-5-4-1', name: 'button-cancel-submit' }"
-        >
-          取 消
-        </el-button>
-        <el-button
-          type="primary"
-          @click="handleAuthorize"
-          v-permission="{ code: '1-5-4-2', name: 'button-cancel-submit' }"
-        >
-          提 交
-        </el-button>
-      </template>
-    </el-dialog>
   </div>
 </template>
 
@@ -111,40 +85,31 @@ import type {
 import MiracleTable from '@/pages/components/MiracleTable.vue';
 import MiracleSearch from '@/pages/components/MiracleSearch.vue';
 import MiracleModal from '@/pages/components/MiracleModal.vue';
-import { CaretRight, DeleteFilled, Edit, Switch, View, Connection } from "@element-plus/icons-vue";
+import { CaretRight, DeleteFilled, Edit, Switch, RefreshLeft, View } from "@element-plus/icons-vue";
 import { dateToString, valueToLabel } from "@/utils/transform";
-import { roleCodeCheck, roleNameCheck } from "@/validator/role-validator";
-import type { RoleListType, RoleSearchType } from "@/type/system/role-type";
+import { nicknameCheck, usernameCheck } from "@/validator/staff-validator";
+import type { StaffListType, StaffSearchType } from "@/type/system/staff-type";
 import {
-  roleAddData,
-  roleDeleteData,
-  roleExportData,
-  rolePageData,
-  roleUpdateData,
-  rolePerms,
-  roleUpdatePerms,
-  roleMenus,
-  roleUpdateMenus,
-  roleButtons,
-  roleUpdateButtons
-} from "@/service/system/role-api";
+  staffAddData,
+  staffDeleteData,
+  staffExportData,
+  staffPageData,
+  staffUpdateData,
+  staffSuperData, staffResetPwd, staffResetRedisLoginTime,
+} from "@/service/system/staff-api";
 import { orgOptsData } from "@/service/system/org-api";
-import { permOptsData } from "@/service/system/perm-api";
-import { menuOptsData } from "@/service/system/menu-api";
-import { buttonOptsData } from "@/service/system/button-api";
-import { ElTree } from "element-plus";
+import { roleOptsData } from "@/service/system/role-api";
 
 //筛选栏数据相关
-const permOpts = ref<TreeOptType[]>();
-const menuOpts = ref<TreeOptType[]>();
-const buttonOpts = ref<TreeOptType[]>();
 const statusOpts = ref<BaseOptType[]>();
-const orgIdOpts = ref<TreeOptType[]>();
 const isLeafOpts = ref<BaseOptType[]>();
+const orgIdOpts = ref<TreeOptType[]>([]);
+const roleIdOpts = ref<BaseOptType[]>([]);
+const superIdOpts = ref<BaseOptType[]>([]);
 const searchColumns: SearchColumnType[] = [
-  { type: 'input', prop: 'roleCode', placeholder: '名称' },
-  { type: 'input', prop: 'roleName', placeholder: '代码' },
-  { type: 'select', prop: 'roleStatus', placeholder: '状态' },
+  { type: 'input', prop: 'username', placeholder: '账号' },
+  { type: 'input', prop: 'nickname', placeholder: '昵称' },
+  { type: 'select', prop: 'staffStatus', placeholder: '状态' },
   { type: 'cascade', prop: 'orgId', placeholder: '所属部门' },
   {
     type: 'date-picker',
@@ -153,8 +118,8 @@ const searchColumns: SearchColumnType[] = [
     startTimeStr: '新建时间(起始)',
     endTimeStr: '新建时间(结束)'
   },
-  { type: 'input', prop: 'orgNames', placeholder: '名称(多个)', span: 12 },
-  { type: 'button', prop: 'operate', placeholder: '', addPermission: { code: '1-5-1-1', name: 'role-add' } },
+  { type: 'input', prop: 'nicknames', placeholder: '昵称(多个)', span: 12 },
+  { type: 'button', prop: 'operate', placeholder: '', addPermission: { code: '1-6-1-1', name: 'staff-add' } },
 ];
 const otherOperates: OperateMenuType[] = [
   {
@@ -162,24 +127,24 @@ const otherOperates: OperateMenuType[] = [
     key: 'exportAll',
     icon: CaretRight,
     callback: () => {
-      roleExportData({ ...searchData.value, current: 1, size: 999999 }).then();
+      staffExportData({ ...searchData.value, current: 1, size: 999999 }).then();
     },
-    permission: { code: '1-5-1-2', name: 'export-role-all' },
+    permission: { code: '1-6-1-2', name: 'export-staff-all' },
   },
   {
     name: '导出(本页)',
     key: 'exportPage',
     icon: CaretRight,
     callback: () => {
-      roleExportData(searchData.value).then();
+      staffExportData(searchData.value).then();
     },
-    permission: { code: '1-5-1-3', name: 'export-role-page' },
+    permission: { code: '1-6-1-3', name: 'export-staff-page' },
   },
 ];
-const searchData = ref<RoleSearchType>({ current: 1, size: 15 });
+const searchData = ref<StaffSearchType>({ current: 1, size: 15 });
 const searchCallback = () => {
   tableLoading.value = true;
-  rolePageData(searchData.value).then(({ data }) => {
+  staffPageData(searchData.value).then(({ data }) => {
     records.value = data.records;
     total.value = data.total;
     tableLoading.value = false;
@@ -192,19 +157,21 @@ const resetCallback = () => {
 const handleAdd = () => {
   addEditModal.value = true;
   addEditEditing.value = true;
-  addEditData.value = { roleStatus: 1 };
+  addEditData.value = { staffStatus: 1, sortNo: -1 };
 };
 
 //表格模块数据相关
 const tableLoading = ref(false);
 const tableColumns: ListColumnType[] = [
-  { prop: 'roleCode', label: '代码' },
-  { prop: 'roleName', label: '名称' },
-  { prop: 'roleStatus', label: '状态', enumTrans: valueToLabel },
-  { prop: 'isLeaf', label: '是否叶子', enumTrans: valueToLabel },
-  { prop: 'sortNo', label: '排序号' },
-  { prop: 'scopeKey', label: '权限码' },
+  { prop: 'username', label: '账号' },
+  { prop: 'nickname', label: '昵称' },
+  { prop: 'mobile', label: '手机号', width: 100 },
   { prop: 'orgName', label: '所属部门' },
+  { prop: 'roleName', label: '角色名称', width: 100 },
+  { prop: 'superName', label: '领导姓名' },
+  { prop: 'staffStatus', label: '状态', enumTrans: valueToLabel },
+  { prop: 'inviteCode', label: '邀请码' },
+  { prop: 'scopeKey', label: '权限码' },
   { prop: 'createTime', label: '新建时间', type: 'date', formatter: dateToString, width: 100 },
   { prop: 'updateTime', label: '修改时间', type: 'date', formatter: dateToString, width: 100 },
 ];
@@ -213,27 +180,30 @@ const operateMenus: OperateMenuType[] = [
     name: '详情',
     icon: View,
     key: 'detail',
-    callback: (row: RoleListType) => {
+    callback: (row: StaffListType) => {
       row.name = row.roleName;
       row.orgIdArr = JSON.parse(row.orgIds?.toString() || '[]')
       addEditData.value = row;
       addEditModal.value = true;
       addEditEditing.value = false;
     },
-    permission: { code: '1-5-2-1', name: 'role-detail' },
+    permission: { code: '1-6-2-1', name: 'staff-detail' },
   },
   {
     name: '修改',
     icon: Edit,
     key: 'edit',
-    callback: (row: RoleListType) => {
-      row.name = row.roleName;
+    callback: (row: StaffListType) => {
+      roleOptsData(row.orgId!).then(({ data }) => {
+        roleIdOpts.value = data;
+      });
       row.orgIdArr = JSON.parse(row.orgIds?.toString() || '[]')
+      row.name = row.roleName;
       addEditData.value = row;
       addEditModal.value = true;
       addEditEditing.value = true;
     },
-    permission: { code: '1-5-2-2', name: 'role-update' },
+    permission: { code: '1-6-2-2', name: 'staff-update' },
   },
   {
     icon: Switch,
@@ -241,9 +211,29 @@ const operateMenus: OperateMenuType[] = [
     isConfirm: true,
     confirmType: 'switch',
     callback: ({ row }) => {
-      roleUpdateData({ id: row.id, roleStatus: row.roleStatus === 1 ? 0 : 1 }).then(() => searchCallback());
+      staffUpdateData({ id: row.id, staffStatus: row.staffStatus === 1 ? 0 : 1 })
+        .then(() => {
+          if (row.staffStatus === 1) {
+            staffResetRedisLoginTime({ id: row.id });
+          }
+          searchCallback();
+        });
+
     },
-    permission: { code: '1-5-2-3', name: 'role-switch-status' },
+    permission: { code: '1-6-2-3', name: 'staff-switch-status' },
+  },
+  {
+    name: '密码重置',
+    icon: RefreshLeft,
+    key: 'resetPwd',
+    isConfirm: true,
+    confirmType: 'resetPwd',
+    callback: ({ row }) => {
+      staffResetPwd({ id: row.id }).then(() => {
+        staffResetRedisLoginTime({ id: row.id });
+      });
+    },
+    permission: { code: '1-6-2-4', name: 'staff-reset-pwd' },
   },
   {
     name: '删除',
@@ -252,125 +242,120 @@ const operateMenus: OperateMenuType[] = [
     isConfirm: true,
     confirmType: 'delete',
     callback: ({ row }) => {
-      roleDeleteData([row.id]).then(() => searchCallback());
-    },
-    permission: { code: '1-5-2-4', name: 'role-delete' },
-  },
-  {
-    name: '授权权限',
-    icon: Connection,
-    key: 'permission',
-    callback: (row: RoleListType) => {
-      currentId.value = row.id;
-      checkStrictly.value = false;
-      authorizeData.value = permOpts.value!;
-      rolePerms(row.id!).then(({ data }) => {
-        authorizeTitle.value = `授权权限(${row.roleName})`;
-        defaultCheckedData.value = data;
-        authorizeVisible.value = true;
+      staffDeleteData([row.id]).then(() => {
+        staffResetRedisLoginTime({ id: row.id });
+        searchCallback();
       });
     },
-    permission: { code: '1-5-2-5', name: 'authorize-permission' },
-  },
-  {
-    name: '授权菜单',
-    icon: Connection,
-    key: 'menu',
-    callback: (row: RoleListType) => {
-      currentId.value = row.id;
-      checkStrictly.value = true;
-      authorizeData.value = menuOpts.value!;
-      roleMenus(row.id!).then(({ data }) => {
-        authorizeTitle.value = `授权菜单(${row.roleName})`;
-        defaultCheckedData.value = data;
-        authorizeVisible.value = true;
-      });
-    },
-    permission: { code: '1-5-2-6', name: 'authorize-menu' },
-  },
-  {
-    name: '授权按钮',
-    icon: Connection,
-    key: 'button',
-    callback: (row: RoleListType) => {
-      currentId.value = row.id;
-      checkStrictly.value = false;
-      authorizeData.value = buttonOpts.value!;
-      roleButtons(row.id!).then(({ data }) => {
-        authorizeTitle.value = `授权按钮(${row.roleName})`;
-        defaultCheckedData.value = data;
-        authorizeVisible.value = true;
-      });
-    },
-    permission: { code: '1-5-2-7', name: 'authorize-button' },
+    permission: { code: '1-6-2-5', name: 'staff-delete' },
   },
 ];
-const tableData = reactive<NormalPageDataType<RoleListType>>({ records: [], total: 0, pages: 0 })
+const tableData = reactive<NormalPageDataType<StaffListType>>({ records: [], total: 0, pages: 0 })
 const { records, total } = { ...toRefs(tableData) };
 
 //弹窗模块数据相关
 const addEditEditing = ref(false);
 const addEditModal = ref(false);
-const addEditData = ref<RoleListType>();
+const addEditData = ref<StaffListType>();
 const displayData: SearchColumnType[] = [
-  { prop: 'orgIdArr', label: '所属部门:', type: 'cascade', span: 11 },
+  {
+    prop: 'orgIdArr',
+    label: '所属部门:',
+    type: 'cascade',
+    span: 11,
+    onChange: v => {
+      if (v && v.length > 0) {
+        roleOptsData(v[v.length - 1]).then(({ data }) => {
+          roleIdOpts.value = data;
+        });
+      }
+    },
+  },
+  {
+    prop: 'roleId',
+    label: '所属角色:',
+    type: 'select',
+    span: 11,
+    onChange: v => {
+      addEditData!.value!.roleName = roleIdOpts.value.find(item => item.value === v)?.label;
+    },
+  },
+  { prop: 'roleName', label: '角色名:', type: 'input', hide: true },
+  { prop: 'username', label: '账号:', type: 'input', span: 11 },
+  { prop: 'nickname', label: '昵称:', type: 'input', span: 11 },
+  { prop: 'mobile', label: '手机号:', type: 'input', span: 11 },
+  { prop: 'email', label: '邮箱:', type: 'input', span: 11 },
+  { prop: 'inviteCode', label: '邀请码:', type: 'input', span: 11 },
+  {
+    prop: 'superId',
+    label: '关联领导:',
+    type: 'select',
+    span: 11,
+    onChange: v => {
+      addEditData!.value!.superName = superIdOpts.value.find(item => item.value === v)?.label;
+    },
+  },
+  { prop: 'superName', label: '关联领导:', type: 'select', hide: true },
   {
     prop: 'sortNo',
     label: '排序号',
     type: 'number',
+    min: -9999,
     options: { symbol: '', precision: '0' },
     onChange: (v) => addEditData.value!.sortNo = v,
     span: 11,
   },
-  { prop: 'roleCode', label: '代码:', type: 'input', span: 11 },
-  { prop: 'roleName', label: '名称:', type: 'input', span: 11 },
-  { prop: 'roleDesc', label: '描述:', type: 'textArea' },
-  { prop: 'isLeaf', label: '是否叶子:', type: 'radio', span: 8 },
-  { prop: 'roleStatus', label: '状态:', type: 'radio', span: 14 },
+  { prop: 'staffStatus', label: '状态:', type: 'radio', span: 11 },
+  { prop: 'remark', label: '备注信息:', type: 'textArea' },
 ];
 const formRules = {
   orgIdArr: [
     { required: true, message: '请选择部门', trigger: 'blur' },
   ],
+  roleId: [
+    { required: true, message: '请选择角色', trigger: 'blur' },
+  ],
+  username: [
+    { required: true, message: '请输入账号', trigger: 'blur' },
+    { min: 4, max: 16, message: '账号长度4~16之间', trigger: 'blur' },
+    {
+      validator: (r: any, v: any, c: any, valida: any, o: any) => usernameCheck(r, v, c, valida, o, addEditData.value?.id), trigger: 'blur'
+    },
+  ],
+  nickname: [
+    { required: true, message: '请输入昵称', trigger: 'blur' },
+    { min: 2, max: 16, message: '昵称长度4~16之间', trigger: 'blur' },
+    {
+      validator: (r: any, v: any, c: any, valida: any, o: any) => nicknameCheck(r, v, c, valida, o, addEditData.value?.id), trigger: 'blur'
+    },
+  ],
+  mobile: [
+    { required: true, message: '请输入手机号', trigger: 'blur' },
+    { max: 16, message: '手机号最大长度为16', trigger: 'blur' },
+  ],
+  email: [
+    { max: 64, message: '邮箱最大长度为64', trigger: 'blur' },
+  ],
   sortNo: [
-    { required: true, message: '请输入排序号', trigger: 'blur' },
+    { required: true, message: '请选择排序号', trigger: 'blur' },
   ],
-  roleCode: [
-    { required: true, message: '请输入代码', trigger: 'blur' },
-    {
-      validator: (r: any, v: any, c: any, valida: any, o: any) => roleCodeCheck(r, v, c, valida, o, {
-        id: addEditData.value?.id,
-        orgId: getOrgId()
-      }), trigger: 'blur'
-    },
+  remark: [
+    { max: 64, message: '备注信息大长度为64', trigger: 'blur' },
   ],
-  roleName: [
-    { required: true, message: '请输入名称', trigger: 'blur' },
-    { min: 4, max: 32, message: '名称长度4~32之间', trigger: 'blur' },
-    {
-      validator: (r: any, v: any, c: any, valida: any, o: any) => roleNameCheck(r, v, c, valida, o, {
-        id: addEditData.value?.id,
-        orgId: getOrgId()
-      }), trigger: 'blur'
-    },
-  ],
-  isLeaf: [
-    { required: true, message: '请选择是否叶子', trigger: 'blur' },
-  ],
-  roleStatus: [
+  staffStatus: [
     { required: true, message: '请选择状态', trigger: 'blur' },
   ],
 };
 const footerButton: AddEditButtonType[] = [
   {
-    permission: { code: '1-5-3-1', name: 'button-cancel-submit' },
+    permission: { code: '1-6-3-1', name: 'button-cancel-submit' },
     onClick: () => {
       addEditModal.value = false;
       addEditEditing.value = false;
     },
   },
   {
-    permission: { code: '1-5-3-2', name: 'button-ensure-submit' },
+    permission: { code: '1-6-3-2', name: 'button-ensure-submit' },
     onClick: async () => {
       const { value: data } = addEditData
       const extraData: {
@@ -388,95 +373,23 @@ const footerButton: AddEditButtonType[] = [
         extraData.orgIds = JSON.stringify(data.orgIdArr);
         extraData.tierLevel = data.orgIdArr.length;
       }
-      const submitData: RoleListType = { ...data, ...extraData };
+      const submitData: StaffListType = { ...data, ...extraData };
       if (data?.id) {
-        await roleUpdateData(submitData);
+        await staffUpdateData(submitData);
       } else {
-        await roleAddData(submitData);
+        await staffAddData(submitData);
       }
       addEditModal.value = false;
       addEditEditing.value = false;
+      staffSuperData().then(({ data }) => {
+        if (data && data.length > 0) {
+          superIdOpts.value = data;
+        }
+      });
       searchCallback();
     },
   },
 ];
-const getOrgId = () => {
-  const { orgIdArr } = addEditData.value!;
-  return orgIdArr?.[orgIdArr?.length - 1];
-};
-
-//角色授权相关
-const treeRef = ref<InstanceType<typeof ElTree>>()
-const authorizeVisible = ref(false);
-const authorizeData = ref<TreeOptType[]>([
-  {
-    value: 1,
-    label: 'Level one 1',
-    children: [
-      {
-        value: 4,
-        label: 'Level two 1-1',
-        children: [
-          {
-            value: 9,
-            label: 'Level three 1-1-1',
-          },
-          {
-            value: 10,
-            label: 'Level three 1-1-2',
-          },
-        ],
-      },
-    ],
-  },
-  {
-    value: 2,
-    label: 'Level one 2',
-    children: [
-      {
-        value: 5,
-        label: 'Level two 2-1',
-      },
-      {
-        value: 6,
-        label: 'Level two 2-2',
-      },
-    ],
-  },
-  {
-    value: 3,
-    label: 'Level one 3',
-    children: [
-      {
-        value: 7,
-        label: 'Level two 3-1',
-      },
-      {
-        value: 8,
-        label: 'Level two 3-2',
-      },
-    ],
-  },
-]);
-const defaultCheckedData = ref<BaseOptType[]>();
-const authorizeTitle = ref<string>();
-const checkStrictly = ref<boolean>();
-const currentId = ref<number>();
-const handleAuthorize = () => {
-  if (authorizeTitle.value?.includes('权限')) {
-    const checkedKeys = treeRef.value!.getCheckedKeys(true);
-    const rolePerms = checkedKeys.map(item => ({ roleId: currentId.value!, permId: item }));
-    roleUpdatePerms(currentId.value!, rolePerms).then(() => authorizeVisible.value = false);
-  } else if (authorizeTitle.value?.includes('菜单')) {
-    const checkedKeys = treeRef.value!.getCheckedKeys(false);
-    const roleMenus = checkedKeys.map(item => ({ roleId: currentId.value!, menuId: item }));
-    roleUpdateMenus(currentId.value!, roleMenus).then(() => authorizeVisible.value = false);
-  } else if (authorizeTitle.value?.includes('按钮')) {
-    const checkedKeys = treeRef.value!.getCheckedKeys(true);
-    const roleButtons = checkedKeys.map(item => ({ roleId: currentId.value!, buttonId: item }));
-    roleUpdateButtons(currentId.value!, roleButtons).then(() => authorizeVisible.value = false);
-  }
-};
 
 //生命周函数
 onMounted(() => {
@@ -485,14 +398,10 @@ onMounted(() => {
   orgOptsData().then(({ data }) => {
     orgIdOpts.value = data;
   });
-  permOptsData().then(({ data }) => {
-    permOpts.value = data;
-  });
-  menuOptsData().then(({ data }) => {
-    menuOpts.value = data;
-  });
-  buttonOptsData().then(({ data }) => {
-    buttonOpts.value = data;
+  staffSuperData().then(({ data }) => {
+    if (data && data.length > 0) {
+      superIdOpts.value = data;
+    }
   });
   searchCallback();
 });

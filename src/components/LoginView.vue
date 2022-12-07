@@ -38,9 +38,10 @@ import { reactive, ref } from "vue";
 import { ElMessage } from "element-plus";
 import { useGlobalStore } from '@/stores/global';
 import { usernameCheck } from "@/utils/validator";
-import { staffLoginApi } from "@/service/system-api";
+import { staffLoginApi } from "@/service/system/staff-api";
 import type { LoginFormModel } from "@/type/layout-type";
-import type { FormInstance } from "element-plus";
+import type { FormInstance } from "element-plus"; //@ts-ignore
+import * as md5 from 'js-md5';
 
 const loginFormRef = ref<FormInstance>();
 const loginData = reactive<LoginFormModel>({ username: '', password: '' });
@@ -62,7 +63,7 @@ const submitForm = () => {
   loginFormRef?.value?.validate((valid: boolean) => {
     if (valid) {
       //发送登录请求
-      staffLoginApi(loginData).then(({ data }) => {
+      staffLoginApi({ ...loginData, password: md5(loginData.password) }).then(({ data }) => {
         const globalStore = useGlobalStore();
         globalStore.setLongRespData(data);
         ElMessage.success("登录成功");
@@ -77,7 +78,9 @@ const submitForm = () => {
   width: 100%;
   height: 100%;
   position: absolute;
-  background: url("@/assets/bg.jpg");
+  background-image: url("@/assets/bg.jpg");
+  background-repeat: no-repeat;
+  background-position: center;
 
   .el-card {
     background: #65768557;

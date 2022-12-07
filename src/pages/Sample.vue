@@ -138,14 +138,14 @@ const formRules = {
 };
 const footerButton: AddEditButtonType[] = [
   {
-    permission: { name: '', code: 0 },
+    permission: { name: '', code: '' },
     onClick: () => {
       addEditModal.value = false;
       addEditEditing.value = false;
     },
   },
   {
-    permission: { name: '', code: 0 },
+    permission: { name: '', code: '' },
     onClick: () => {
       addEditModal.value = false;
       addEditEditing.value = false;
@@ -220,14 +220,14 @@ const otherOperates: OperateMenuType[] = [
     key: 'export',
     icon: CaretRight,
     callback: exportData,
-    permission: { name: 'export-order', code: 1111 },
+    permission: { name: 'export-order', code: '' },
   },
   {
     icon: Expand,
     name: '导出(订单)',
     key: 'export-detail',
     callback: exportDetailData,
-    permission: { name: 'export-order-detail', code: 2222 },
+    permission: { name: 'export-order-detail', code: '' },
   },
 ];
 

@@ -4,8 +4,8 @@ import type { RoleListType, RoleSearchType } from "@/type/system/role-type";
 import type { TreeKey } from "element-plus/es/components/tree/src/tree.type";
 
 //1.获取角色选项
-export function roleOptsData(): Promise<NormalRespType<TreeOptType[]>> {
-  return request.post(`/system-mgr/sys-role/roleOptsData`);
+export function roleOptsData(orgId: number): Promise<NormalRespType<TreeOptType[]>> {
+  return request.post(`/system-mgr/sys-role/roleOptsData`, undefined, { params: { orgId } });
 }
 
 //2.校验角色数据是否重复

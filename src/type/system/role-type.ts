@@ -1,6 +1,7 @@
 export interface RoleListType {
   id?: number;
   name?: string;
+  roleCategory?: string;
   roleCode?: string;
   roleName?: string;
   roleDesc?: string;

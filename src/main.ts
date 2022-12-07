@@ -52,8 +52,8 @@ const globalStore = useGlobalStore();
 //1.1.前置路由守卫(初始化时被调用，每次路由切换时也调用)
 router.beforeEach(async (to, from, next) => {
     const loginStateData = globalStore.loginData;
-    const jwtToken = loginStateData.jwtToken;
-    const roleMenus = loginStateData.roleMenus;
+    const jwtToken = loginStateData?.jwtToken;
+    const roleMenus = loginStateData?.roleMenus;
 
     if (!jwtToken && to.path !== '/login') {
         globalStore.nextPath = to.path;

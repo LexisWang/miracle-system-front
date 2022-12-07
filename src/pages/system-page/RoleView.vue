@@ -53,6 +53,9 @@
       :add-edit-data="addEditData"
       :display-data="displayData"
       :form-rules="formRules"
+      :select-opts="{
+        roleCategory: roleTypeOpts,
+      }"
       :cascade-opts="{
         orgIdArr: orgIdOpts,
       }"
@@ -98,7 +101,7 @@
 
 <script setup lang="ts">
 import { onMounted, reactive, ref, toRefs } from "vue";
-import { binaryChoiceOpts, normalStatusOpts } from "@/utils/constant";
+import { binaryChoiceOpts, normalStatusOpts, roleCategoryOpts } from "@/utils/constant";
 import type {
   AddEditButtonType,
   BaseOptType,
@@ -141,6 +144,7 @@ const buttonOpts = ref<TreeOptType[]>();
 const statusOpts = ref<BaseOptType[]>();
 const orgIdOpts = ref<TreeOptType[]>();
 const isLeafOpts = ref<BaseOptType[]>();
+const roleTypeOpts = ref<BaseOptType[]>();
 const searchColumns: SearchColumnType[] = [
   { type: 'input', prop: 'roleCode', placeholder: '名称' },
   { type: 'input', prop: 'roleName', placeholder: '代码' },
@@ -313,7 +317,7 @@ const addEditEditing = ref(false);
 const addEditModal = ref(false);
 const addEditData = ref<RoleListType>();
 const displayData: SearchColumnType[] = [
-  { prop: 'orgIdArr', label: '所属部门:', type: 'cascade', span: 11 },
+  { prop: 'orgIdArr', label: '所属部门:', type: 'cascade', span: 23 },
   {
     prop: 'sortNo',
     label: '排序号',
@@ -322,6 +326,7 @@ const displayData: SearchColumnType[] = [
     onChange: (v) => addEditData.value!.sortNo = v,
     span: 11,
   },
+  { prop: 'roleCategory', label: '类型:', type: 'select', span: 11 },
   { prop: 'roleCode', label: '代码:', type: 'input', span: 11 },
   { prop: 'roleName', label: '名称:', type: 'input', span: 11 },
   { prop: 'roleDesc', label: '描述:', type: 'textArea' },
@@ -335,8 +340,12 @@ const formRules = {
   sortNo: [
     { required: true, message: '请输入排序号', trigger: 'blur' },
   ],
+  roleCategory: [
+    { required: true, message: '请选择类型', trigger: 'blur' },
+  ],
   roleCode: [
     { required: true, message: '请输入代码', trigger: 'blur' },
+    { min: 4, max: 16, message: '代码长度4~16之间', trigger: 'blur' },
     {
       validator: (r: any, v: any, c: any, valida: any, o: any) => roleCodeCheck(r, v, c, valida, o, {
         id: addEditData.value?.id,
@@ -346,7 +355,7 @@ const formRules = {
   ],
   roleName: [
     { required: true, message: '请输入名称', trigger: 'blur' },
-    { min: 4, max: 32, message: '名称长度4~32之间', trigger: 'blur' },
+    { min: 4, max: 16, message: '名称长度4~16之间', trigger: 'blur' },
     {
       validator: (r: any, v: any, c: any, valida: any, o: any) => roleNameCheck(r, v, c, valida, o, {
         id: addEditData.value?.id,
@@ -482,6 +491,7 @@ const handleAuthorize = () => {
 onMounted(() => {
   statusOpts.value = normalStatusOpts;
   isLeafOpts.value = binaryChoiceOpts;
+  roleTypeOpts.value = roleCategoryOpts;
   orgOptsData().then(({ data }) => {
     orgIdOpts.value = data;
   });
