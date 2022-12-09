@@ -12,9 +12,9 @@ export const useGlobalStore = defineStore(StoreName.GLOBAL, {
     currentMenu: undefined,
     currentFullPath: undefined,
     layoutTabList: [],
-    tabMaxCount: 8
+    tabMaxCount: 8,
+    notifyMsg: undefined,
   }),
-  getters: {},
   actions: {
     async setLongRespData(data: LoginResDto) {
       this.loginData = data;

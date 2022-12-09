@@ -34,4 +34,6 @@ export interface GlobalDataType {
   currentFullPath?: string;
   layoutTabList: TagDataType[];
   tabMaxCount: number;
+
+  notifyMsg?: any;
 }

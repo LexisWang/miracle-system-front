@@ -29,8 +29,8 @@
         orgStatus: statusOpts,
         isLeaf: isLeafOpts,
       }"
-        row-main-prop="name"
-        row-status-prop="status"
+        row-main-prop="orgName"
+        row-status-prop="orgStatus"
       >
         <template #footer>
           <el-pagination

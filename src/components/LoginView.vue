@@ -43,6 +43,7 @@ import type { LoginFormModel } from "@/type/layout-type";
 import type { FormInstance } from "element-plus"; //@ts-ignore
 import * as md5 from 'js-md5';
 
+const globalStore = useGlobalStore();
 const loginFormRef = ref<FormInstance>();
 const loginData = reactive<LoginFormModel>({ username: '', password: '' });
 
@@ -57,14 +58,10 @@ const rules = {
   ]
 };
 const submitForm = () => {
-  // createPerson({ orgName: 'Miracle-', orgAge: 26, createTime: new Date().valueOf() }).then(res => {
-  //   console.log(res);
-  // })
   loginFormRef?.value?.validate((valid: boolean) => {
     if (valid) {
       //发送登录请求
       staffLoginApi({ ...loginData, password: md5(loginData.password) }).then(({ data }) => {
-        const globalStore = useGlobalStore();
         globalStore.setLongRespData(data);
         ElMessage.success("登录成功");
       });

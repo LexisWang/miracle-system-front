@@ -1,3 +1,5 @@
+const WS_ADDRESS = 'ws://localhost:3000/ws/'
+
 const binaryChoiceOpts = [
   { value: 0, label: '否', color: 'red' },
   { value: 1, label: '是', color: 'green' },
@@ -29,6 +31,7 @@ const roleCategoryOpts = [
 ];
 
 export {
+  WS_ADDRESS,
   binaryChoiceOpts,
   normalStatusOpts,
   requestMethodOpts,

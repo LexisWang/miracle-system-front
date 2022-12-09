@@ -1,25 +1,32 @@
 # background-management-system
 
+
+
 This template should help get you started developing with Vue 3 in Vite.
 
-## Recommended IDE Setup
+## 简单介绍
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+这是一个使用 vite+vue3+elementplus+pinia+ts的后台管理系统
+包括 `部门组织` `权限控制` `菜单权限配置` `按钮权限配置` `角色管理` `用户管理` 共六个模块
+相对来说完成度还是比较高的
 
-## Type Support for `.vue` Imports in TS
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin) to make the TypeScript language service aware of `.vue` types.
 
-If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more performant. You can enable it by the following steps:
+### 效果图预览
 
-1. Disable the built-in TypeScript Extension
-    1) Run `Extensions: Show Built-in Extensions` from VSCode's command palette
-    2) Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
-2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
+![image-20221207172007455](./readme-img/image-20221207172007455.png)
 
-## Customize configuration
+![image-20221207172102049](./readme-img/image-20221207172102049.png)
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+![image-20221207172117552](./readme-img/image-20221207172117552.png)
+
+![image-20221207172134416](./readme-img/image-20221207172134416.png)
+
+
+
+### 线上预览地址
+
+
 
 ## Project Setup
 
