@@ -143,3 +143,18 @@ export interface NormalPageDataType<T> {
   pages: number;
   records: T[];
 }
+
+export interface UploadExtraDataType {
+  category: string;
+  relatedId?: number;
+  relatedIds?: number[];
+}
+
+export interface UploadRespDataType {
+  id: number;
+  fileName: string;
+  fileFormat: string;
+  filePath: string;
+  creator: string;
+  upTime: Date | string;
+}

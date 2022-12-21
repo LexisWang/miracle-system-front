@@ -8,7 +8,6 @@ import router from './router';
 import request from "@/utils/request";
 import { permission } from '@/utils/directive';
 import { useGlobalStore } from "@/stores/global";
-import { useWebSocket } from "@/hooks";
 import addDynamicRoutes from "@/router/filter-routes";
 import permanentPlugin from '@/stores/permanent-plugin';
 
@@ -71,9 +70,6 @@ router.beforeEach(async (to, from, next) => {
 //1.2.后置路由守卫(初始化时被调用，每次路由切换时也调用)
 router.afterEach((to, from) => {
   if (from.path === '/login') {
-    if (!globalStore.loginData?.userid) {
-      useWebSocket(globalStore.loginData.userid!, e => globalStore.notifyMsg = e.data);
-    }
     globalStore.nextPath = undefined;
   } else if (to.path === '/login') {
     globalStore.nextPath = from.path;

@@ -1,5 +1,6 @@
 import router from '@/router';
 import { defineStore } from 'pinia';
+import { useWebSocket } from "@/hooks";
 import { StoreName } from '@/stores/store-name';
 import type { RouteRecordRaw } from "vue-router";
 import type { GlobalDataType, LoginResDto } from "@/type/layout-type";
@@ -23,6 +24,7 @@ export const useGlobalStore = defineStore(StoreName.GLOBAL, {
       } else {
         await router.push('/home');
       }
+      useWebSocket(data.userid!, e => this.notifyMsg = e.data)
     },
     setCurrentMenu(menuData: RouteRecordRaw) { //@ts-ignore
       const matched: RouteRecordRaw[] = menuData.matched;

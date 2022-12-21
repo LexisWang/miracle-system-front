@@ -26,7 +26,10 @@ This template should help get you started developing with Vue 3 in Vite.
 
 ### 线上预览地址
 
-
+### GitHub推送和拉取加速
+```shell
+git config --global https.proxy
+```
 
 ## Project Setup
 

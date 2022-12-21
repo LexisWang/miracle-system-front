@@ -91,6 +91,17 @@ const dynamicRoutes: RouteRecordRaw[] = [
             },
             component: () => import(/* webpackChunkName: "order" */ '@/pages/system-page/StaffView.vue'),
           },
+          {
+            path: 'dict',
+            name: 'dict',
+            meta: {
+              isShow: true,
+              title: '字典配置',
+              icon: 'tools',
+              parent: 'system',
+            },
+            component: () => import(/* webpackChunkName: "order" */ '@/pages/system-page/DictView.vue'),
+          },
         ]
       },
       {

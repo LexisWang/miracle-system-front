@@ -17,6 +17,16 @@
       </el-breadcrumb>
     </div>
     <div class="r-content">
+      <el-dropdown class="notify-message" trigger="click">
+        <el-badge :value="200" :max="99">
+          <el-button class="new-msg">新消息</el-button>
+        </el-badge>
+        <template #dropdown>
+          <el-dropdown-item>你有新的消息1111</el-dropdown-item>
+          <el-dropdown-item>你有新的消息2222</el-dropdown-item>
+          <el-dropdown-item>你有新的消息3333</el-dropdown-item>
+        </template>
+      </el-dropdown>
       <el-dropdown>
         <img class="user-icon" src="../../assets/userIcon.png" alt="加载图片失败">
         <template #dropdown>
@@ -110,10 +120,20 @@ const updatePwdHandler = () => {
   }
 
   .r-content {
+    .notify-message {
+      margin-right: 26px;
+      .new-msg {
+        background-color: #333;
+        font-weight: 700;
+        color: white;
+        border: none;
+        padding: 8px;
+      }
+    }
     .user-icon {
       width: 30px;
       height: 30px;
-      margin-right: 10px;
+      margin: 0 10px;
     }
   }
 }

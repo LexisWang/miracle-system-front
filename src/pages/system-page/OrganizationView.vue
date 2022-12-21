@@ -26,11 +26,19 @@
         :operate-menus="operateMenus"
         :operate-perm="{code: '1-1-2', name: 'org-table'}"
         :select-opts="{
-        orgStatus: statusOpts,
-        isLeaf: isLeafOpts,
-      }"
+          orgStatus: statusOpts,
+          isLeaf: isLeafOpts,
+        }"
         row-main-prop="orgName"
         row-status-prop="orgStatus"
+        :upload-extra-data="uploadExtraData"
+        :attachments="attachments"
+        :upload-visible="uploadVisible"
+        :upload-title="uploadTitle"
+        :attachments-visible="attachmentsVisible"
+        :attachments-list-title="attachmentsTitle"
+        @close-upload="closeUpload"
+        @close-attachments="closeAttachments"
       >
         <template #footer>
           <el-pagination
@@ -82,7 +90,7 @@ import type { OrgListType, OrgSearchType } from "@/type/system/org-type";
 import MiracleTable from '@/pages/components/MiracleTable.vue';
 import MiracleSearch from '@/pages/components/MiracleSearch.vue';
 import MiracleModal from '@/pages/components/MiracleModal.vue';
-import { CaretRight, DeleteFilled, Edit, Switch, View } from "@element-plus/icons-vue";
+import { CaretRight, DeleteFilled, Edit, Switch, View, Upload, List } from "@element-plus/icons-vue";
 import { dateToString, valueToLabel } from "@/utils/transform";
 import {
   orgAddData,
@@ -93,6 +101,8 @@ import {
   orgUpdateData
 } from "@/service/system/org-api";
 import { orgCodeCheck, orgNameCheck } from "@/validator/org-validator";
+import type { UploadExtraDataType, UploadRespDataType } from "@/type/base-type";
+import { attachmentList } from "@/service/common/attachment-api";
 
 //筛选栏数据相关
 const statusOpts = ref<BaseOptType[]>();
@@ -215,9 +225,44 @@ const operateMenus: OperateMenuType[] = [
     },
     permission: { code: '1-1-2-4', name: 'org-delete' },
   },
+  {
+    name: '上传',
+    icon: Upload,
+    key: 'uploadFile',
+    callback: (row: OrgListType) => {
+      attachmentList({ category: 'consignor', relatedId: row.id }).then(({ data }) => {
+        attachments.value = data;
+      });
+      uploadTitle.value = `部门组织(${row.orgName})附件`
+      uploadExtraData.value = { category: 'consignor', relatedId: row.id };
+      uploadVisible.value = true;
+    },
+    permission: { code: '1-1-2-5', name: 'org-upload' },
+  },
+  {
+    name: '附件',
+    icon: List,
+    key: 'attachments',
+    callback: (row: OrgListType) => {
+      attachmentList({ category: 'consignor', relatedId: row.id }).then(({ data }) => {
+        attachments.value = data;
+      });
+      attachmentsVisible.value = true;
+      attachmentsTitle.value = row.orgName!;
+    },
+    permission: { code: '1-1-2-6', name: 'org-attachments' },
+  },
 ];
 const tableData = reactive<NormalPageDataType<OrgListType>>({ records: [], total: 0, pages: 0 })
 const { records, total } = { ...toRefs(tableData) };
+const attachments = ref<UploadRespDataType[]>([]);
+const uploadExtraData = ref<UploadExtraDataType>();
+const uploadVisible = ref(false);
+const uploadTitle = ref('');
+const attachmentsVisible = ref(false);
+const attachmentsTitle = ref('');
+const closeUpload = () => uploadVisible.value = false;
+const closeAttachments = () => attachmentsVisible.value = false;
 
 //弹窗模块数据相关
 const addEditEditing = ref(false);

@@ -1,17 +1,17 @@
-const WS_ADDRESS = 'ws://localhost:3000/ws/'
+export const WS_ADDRESS = 'ws://localhost:3000/ws/'
 
-const binaryChoiceOpts = [
+export const binaryChoiceOpts = [
   { value: 0, label: '否', color: 'red' },
   { value: 1, label: '是', color: 'green' },
 ];
 
-const normalStatusOpts = [
+export const normalStatusOpts = [
   { value: -1, label: '默认' },
   { value: 0, label: '禁用', color: 'red' },
   { value: 1, label: '启用', color: 'green' },
 ];
 
-const requestMethodOpts = [
+export const requestMethodOpts = [
   { value: 'POST', label: 'POST' },
   { value: 'PUT', label: 'PUT' },
   { value: 'DELETE', label: 'DELETE' },
@@ -20,7 +20,7 @@ const requestMethodOpts = [
   { value: 'OPTIONS', label: 'OPTIONS' },
 ];
 
-const roleCategoryOpts = [
+export const roleCategoryOpts = [
   { value: 1, label: '开发' },
   { value: 5, label: '业务' },
   { value: 10, label: '关务' },
@@ -30,10 +30,14 @@ const roleCategoryOpts = [
   { value: 30, label: '财务' },
 ];
 
-export {
-  WS_ADDRESS,
-  binaryChoiceOpts,
-  normalStatusOpts,
-  requestMethodOpts,
-  roleCategoryOpts,
-};
+export const dictValueOpts = [
+  { value: 1, label: '服务渠道' },
+  { value: 2, label: '货运代理' },
+  { value: 3, label: '货物类型' },
+  { value: 4, label: '获客途径' },
+  { value: 5, label: '客户性质' },
+  { value: 6, label: '付款类型' },
+];
+
+//图片类型或者PDF类型附件
+export const CAN_PREVIEW_FILE_TYPE = ['image/png', 'image/jpg', 'image/jpeg', 'application/pdf', 'image/gif', 'image/bpm', 'image/dpg', 'image/webp'];

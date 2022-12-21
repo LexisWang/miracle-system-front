@@ -71,6 +71,40 @@
       </el-table-column>
     </el-table>
   </el-card>
+  <MiracleUpload
+    :modal-title="`上传-${uploadTitle}`"
+    :visible="uploadVisible"
+    :extra-data="uploadExtraData"
+    :file-list="attachments"
+    :close-callback="() => emits('close-upload')"
+  />
+  <el-dialog
+    :width="610"
+    :title="`(${attachmentsListTitle})附件列表`"
+    v-model="attachmentListVisible"
+    :before-close="() => emits('close-attachments')"
+    :close-on-click-modal="false"
+  >
+    <el-table :data="attachments">
+      <el-table-column property="name" label="缩略图" width="80">
+        <template #default="{row}">
+          <a :href="row.filePath" target="_blank">
+            <img v-if="['png', 'jpg', 'jpeg', 'gif', 'dpg', 'webp'].includes(row.fileFormat)"
+              style="width: 32px; height: 32px" :src="row.filePath" alt="无法加载图片" />
+            <span v-else>{{ row.fileName }}</span>
+          </a>
+        </template>
+      </el-table-column>
+      <el-table-column width="160" property="fileName" label="文件名" />
+      <el-table-column width="150"  property="creator" label="上传者" />
+      <el-table-column
+        width="180"
+        property="upTime"
+        label="上传时间"
+        :formatter="(row, column, cellValue) => dateToString(cellValue, 'datetime')"
+      />
+    </el-table>
+  </el-dialog>
   <slot name="footer"/>
   <!--  <template v-for="person in persons">
       <slot :data="person"/>
@@ -79,14 +113,20 @@
 
 <script lang="ts" setup="">
 //a.公共引入
-import { ref, withDefaults } from 'vue';
+import { computed, ref, withDefaults } from 'vue';
 import { Expand } from '@element-plus/icons-vue';
 //b.自定义类型引入
-import type { ListColumnType, OperateMenuType } from "@/type/base-type";
+import type {
+  ElPermissionType,
+  ListColumnType,
+  OperateMenuType,
+  UploadExtraDataType,
+  UploadRespDataType
+} from "@/type/base-type";
 //c.自定义工具引入
-import { setCellColor } from '@/utils/transform';
+import { dateToString, setCellColor } from '@/utils/transform';
 import MiraclePopover from '@/pages/components/MiraclePopover.vue';
-import type { ElPermissionType } from "@/type/base-type";
+import MiracleUpload from '@/pages/components/MiracleUpload.vue';
 import { ElMessage } from "element-plus";
 
 //1.父组件参数
@@ -100,11 +140,23 @@ const props = withDefaults(defineProps<{
   selectOpts?: any;
   rowMainProp?: string;
   rowStatusProp?: string;
+
+  uploadExtraData?: UploadExtraDataType;
+  attachments?: UploadRespDataType[];
+  uploadVisible?: boolean;
+  uploadTitle?: string;
+  attachmentsVisible?: boolean;
+  attachmentsListTitle?: string;
 }>(), {
   tableLoading: () => false,
   rowMainProp: 'name',
   rowStatusProp: 'status',
 })
+
+const emits = defineEmits<{
+  (e: 'close-upload'): void
+  (e: 'close-attachments'): void
+}>();
 
 //3.该组件上下文参数
 const ctx = ref<object>({
@@ -146,6 +198,8 @@ const confirmCallback = async (item: any, row: any, remark: any) => {
   await item.callback({ row, remark });
   ElMessage.success("操作成功");
 };
+
+const attachmentListVisible = computed(() => props.attachmentsVisible);
 
 </script>
 
