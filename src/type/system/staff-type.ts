@@ -11,9 +11,8 @@ export interface StaffListType {
   mobile?: string;
   superId?: number;
   superName?: string;
-  orgIdArr?: number[];
   orgId?: number;
-  orgIds?: string;
+  orgIds?: number[];
   orgName?: string;
   roleId?: number;
   roleName?: string;

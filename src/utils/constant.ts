@@ -37,6 +37,13 @@ export const dictValueOpts = [
   { value: 4, label: '获客途径' },
   { value: 5, label: '客户性质' },
   { value: 6, label: '付款类型' },
+  { value: 7, label: '客户级别' },
+];
+
+export const creditStatusOpts = [
+  { value: 10, label: '危险级', color: 'red' },
+  { value: 20, label: '注意级', color: 'orange' },
+  { value: 30, label: '优质级', color: 'green' },
 ];
 
 //图片类型或者PDF类型附件

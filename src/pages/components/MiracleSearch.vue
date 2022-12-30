@@ -44,9 +44,8 @@
           filterable
           collapse-tags
           :options="cascadeOpts[item.prop]"
-          v-model="searchData[item.prop]"
           :placeholder="item.placeholder"
-          :props="{checkStrictly: true, multiple: true}"
+          :props="{checkStrictly: true, multiple: typeof item.multiple !== 'undefined' ? item.multiple : true}"
           style="width: 100%; margin-bottom: 8px"
         />
         <el-date-picker

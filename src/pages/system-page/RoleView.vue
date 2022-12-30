@@ -57,7 +57,7 @@
         roleCategory: roleTypeOpts,
       }"
       :cascade-opts="{
-        orgIdArr: orgIdOpts,
+        orgIds: orgIdOpts,
       }"
       :radio-opts="{
         roleStatus: statusOpts,
@@ -116,7 +116,7 @@ import MiracleSearch from '@/pages/components/MiracleSearch.vue';
 import MiracleModal from '@/pages/components/MiracleModal.vue';
 import { CaretRight, DeleteFilled, Edit, Switch, View, Connection } from "@element-plus/icons-vue";
 import { dateToString, valueToLabel } from "@/utils/transform";
-import { roleCodeCheck, roleNameCheck } from "@/validator/role-validator";
+import { roleCodeCheck, roleNameCheck } from "@/validator/system/role-validator";
 import type { RoleListType, RoleSearchType } from "@/type/system/role-type";
 import {
   roleAddData,
@@ -202,8 +202,8 @@ const handleAdd = () => {
 //表格模块数据相关
 const tableLoading = ref(false);
 const tableColumns: ListColumnType[] = [
-  { prop: 'roleCode', label: '代码' },
-  { prop: 'roleName', label: '名称' },
+  { prop: 'roleCode', label: '代码', width: 140 },
+  { prop: 'roleName', label: '名称', width: 140 },
   { prop: 'roleStatus', label: '状态', enumTrans: valueToLabel },
   { prop: 'isLeaf', label: '是否叶子', enumTrans: valueToLabel },
   { prop: 'sortNo', label: '排序号' },
@@ -219,7 +219,6 @@ const operateMenus: OperateMenuType[] = [
     key: 'detail',
     callback: (row: RoleListType) => {
       row.name = row.roleName;
-      row.orgIdArr = JSON.parse(row.orgIds?.toString() || '[]')
       addEditData.value = row;
       addEditModal.value = true;
       addEditEditing.value = false;
@@ -232,7 +231,6 @@ const operateMenus: OperateMenuType[] = [
     key: 'edit',
     callback: (row: RoleListType) => {
       row.name = row.roleName;
-      row.orgIdArr = JSON.parse(row.orgIds?.toString() || '[]')
       addEditData.value = row;
       addEditModal.value = true;
       addEditEditing.value = true;
@@ -317,7 +315,7 @@ const addEditEditing = ref(false);
 const addEditModal = ref(false);
 const addEditData = ref<RoleListType>();
 const displayData: SearchColumnType[] = [
-  { prop: 'orgIdArr', label: '所属部门:', type: 'cascade', span: 23 },
+  { prop: 'orgIds', label: '所属部门:', type: 'cascade', span: 23 },
   {
     prop: 'sortNo',
     label: '排序号',
@@ -384,18 +382,15 @@ const footerButton: AddEditButtonType[] = [
       const { value: data } = addEditData
       const extraData: {
         orgId?: number;
-        orgIds?: string;
         tierLevel?: number;
       } = {};
       //进行输出的重组装处理
-      if (!data?.orgIdArr || data.orgIdArr.length === 0) {
+      if (!data?.orgIds || data.orgIds.length === 0) {
         extraData.orgId = 0;
-        extraData.orgIds = '[0]';
         extraData.tierLevel = 0;
       } else {
-        extraData.orgId = data.orgIdArr[data.orgIdArr.length - 1];
-        extraData.orgIds = JSON.stringify(data.orgIdArr);
-        extraData.tierLevel = data.orgIdArr.length;
+        extraData.orgId = data.orgIds[data.orgIds.length - 1];
+        extraData.tierLevel = data.orgIds.length;
       }
       const submitData: RoleListType = { ...data, ...extraData };
       if (data?.id) {
@@ -410,8 +405,8 @@ const footerButton: AddEditButtonType[] = [
   },
 ];
 const getOrgId = () => {
-  const { orgIdArr } = addEditData.value!;
-  return orgIdArr?.[orgIdArr?.length - 1];
+  const { orgIds } = addEditData.value!;
+  return orgIds?.[orgIds?.length - 1];
 };
 
 //角色授权相关

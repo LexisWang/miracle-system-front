@@ -1,5 +1,6 @@
 export interface DictListType {
   id?: number;
+  name?: string;
   dictCode?: string;
   dictName?: string;
   dictStatus?: number;
@@ -31,8 +32,8 @@ export interface ValueListType {
   valueName?: string;
   valueStatus?: number;
   valueRemark?: string;
-  includeIds?: string;
-  belongName?: string | string[];
+  includeIds?: number[];
+  belongName?: string[];
   dictId?: number;
   dictName?: string;
   createTime?: Date | string;

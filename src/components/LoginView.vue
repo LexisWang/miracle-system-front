@@ -37,7 +37,7 @@
 import { reactive, ref } from "vue";
 import { ElMessage } from "element-plus";
 import { useGlobalStore } from '@/stores/global';
-import { usernameCheck } from "@/utils/validator";
+import { usernameCheck } from "@/validator/comm-validator";
 import { staffLoginApi } from "@/service/system/staff-api";
 import type { LoginFormModel } from "@/type/layout-type";
 import type { FormInstance } from "element-plus"; //@ts-ignore

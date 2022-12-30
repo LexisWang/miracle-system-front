@@ -8,9 +8,8 @@ export interface PermListType {
   sortNo?: number;
   tierLevel?: number;
   globalSort?: number;
-  pIdArr?: number[];
   pId?: number;
-  pIds?: string;
+  pIds?: number[];
   permRemark?: string;
   createTime?: Date | string;
   updateTime?: Date | string;

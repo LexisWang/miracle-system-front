@@ -54,7 +54,7 @@
         reqMethod: reqMethodOpts,
       }"
       :cascade-opts="{
-        menuIdArr: menuIdOpts,
+        menuIds: menuIdOpts,
       }"
       :radio-opts="{
         menuStatus: statusOpts,
@@ -82,7 +82,7 @@ import MiracleTable from '@/pages/components/MiracleTable.vue';
 import MiracleSearch from '@/pages/components/MiracleSearch.vue';
 import MiracleModal from '@/pages/components/MiracleModal.vue';
 import { DeleteFilled, Edit, View } from "@element-plus/icons-vue";
-import { buttonCodeCheck, buttonNameCheck } from "@/validator/button-validator";
+import { buttonCodeCheck, buttonNameCheck } from "@/validator/system/button-validator";
 import type { ButtonListType, ButtonSearchType } from "@/type/system/button-type";
 import { buttonAddData, buttonDeleteData, buttonPageData, buttonUpdateData } from "@/service/system/button-api";
 import { menuOptsData } from "@/service/system/menu-api";
@@ -133,7 +133,6 @@ const operateMenus: OperateMenuType[] = [
     icon: View,
     key: 'detail',
     callback: (row: ButtonListType) => {
-      row.menuIdArr = JSON.parse(row.menuIds?.toString() || '[]')
       addEditData.value = row;
       addEditModal.value = true;
       addEditEditing.value = false;
@@ -145,7 +144,6 @@ const operateMenus: OperateMenuType[] = [
     icon: Edit,
     key: 'edit',
     callback: (row: ButtonListType) => {
-      row.menuIdArr = JSON.parse(row.menuIds?.toString() || '[]')
       addEditData.value = row;
       addEditModal.value = true;
       addEditEditing.value = true;
@@ -172,7 +170,7 @@ const addEditEditing = ref(false);
 const addEditModal = ref(false);
 const addEditData = ref<ButtonListType>();
 const displayData: SearchColumnType[] = [
-  { prop: 'menuIdArr', label: '父菜单:', type: 'cascade', span: 11 },
+  { prop: 'menuIds', label: '父菜单:', type: 'cascade', span: 11 },
   {
     prop: 'sortNo',
     label: '模块号',
@@ -204,7 +202,7 @@ const formRules = {
       }), trigger: 'blur'
     },
   ],
-  menuIdArr: [
+  menuIds: [
     { required: true, message: '请选择所属菜单', trigger: 'blur' },
   ],
   sortNo: [
@@ -225,18 +223,15 @@ const footerButton: AddEditButtonType[] = [
       const { value: data } = addEditData
       const extraData: {
         menuId?: number;
-        menuIds?: string;
         tierLevel?: number;
       } = {};
       //进行输出的重组装处理
-      if (!data?.menuIdArr || data.menuIdArr.length === 0) {
+      if (!data?.menuIds || data.menuIds.length === 0) {
         extraData.menuId = 0;
-        extraData.menuIds = '[0]';
         extraData.tierLevel = 0;
       } else {
-        extraData.menuId = data.menuIdArr[data.menuIdArr.length - 1];
-        extraData.menuIds = JSON.stringify(data.menuIdArr);
-        extraData.tierLevel = data.menuIdArr.length;
+        extraData.menuId = data.menuIds[data.menuIds.length - 1];
+        extraData.tierLevel = data.menuIds.length;
       }
       const submitData: ButtonListType = { ...data, ...extraData };
       if (data?.id) {
@@ -251,8 +246,8 @@ const footerButton: AddEditButtonType[] = [
   },
 ];
 const getMenuId = () => {
-  const { menuIdArr } = addEditData.value!;
-  return menuIdArr?.[menuIdArr?.length - 1];
+  const { menuIds } = addEditData.value!;
+  return menuIds?.[menuIds?.length - 1];
 };
 
 //生命周函数

@@ -9,9 +9,8 @@ export interface MenuListType {
   sortNo?: number;
   tierLevel?: number;
   globalSort?: number;
-  pIdArr?: number[];
   pId?: number;
-  pIds?: string;
+  pIds?: number[];
   menuRemark?: string;
   createTime?: Date | string;
   updateTime?: Date | string;

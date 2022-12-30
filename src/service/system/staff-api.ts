@@ -5,7 +5,7 @@ import type { LoginFormModel, LoginResDto } from "@/type/layout-type";
 import type { AxiosResponse } from "axios";
 
 //1.获取职员选项
-export function staffOptsData(roleCategory: string): Promise<NormalRespType<BaseOptType[]>> {
+export function staffOptsData(roleCategory: number): Promise<NormalRespType<BaseOptType[]>> {
   return request.post(`/system-mgr/sys-staff/staffOptsData`, undefined, { params: { roleCategory } });
 }
 

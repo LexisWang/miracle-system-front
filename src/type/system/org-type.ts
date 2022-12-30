@@ -12,9 +12,8 @@ export interface OrgListType {
   sortNo?: number;
   scopeKey?: string;
   tierLevel?: number;
-  pIdArr?: number[];
   pId?: number;
-  pIds?: string;
+  pIds?: number[];
   createTime?: Date | string;
   updateTime?: Date | string;
   creatorId?: number;

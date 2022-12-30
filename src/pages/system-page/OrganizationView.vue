@@ -62,7 +62,7 @@
       :display-data="displayData"
       :form-rules="formRules"
       :cascade-opts="{
-        pIdArr: pidOpts,
+        pIds: pidOpts,
       }"
       :radio-opts="{
         orgStatus: statusOpts,
@@ -100,7 +100,7 @@ import {
   orgPageData,
   orgUpdateData
 } from "@/service/system/org-api";
-import { orgCodeCheck, orgNameCheck } from "@/validator/org-validator";
+import { orgCodeCheck, orgNameCheck } from "@/validator/system/org-validator";
 import type { UploadExtraDataType, UploadRespDataType } from "@/type/base-type";
 import { attachmentList } from "@/service/common/attachment-api";
 
@@ -184,7 +184,6 @@ const operateMenus: OperateMenuType[] = [
     key: 'detail',
     callback: (row: OrgListType) => {
       row.name = row.orgName;
-      row.pIdArr = JSON.parse(row.pIds?.toString() || '[]')
       addEditData.value = row;
       addEditModal.value = true;
       addEditEditing.value = false;
@@ -197,7 +196,6 @@ const operateMenus: OperateMenuType[] = [
     key: 'edit',
     callback: (row: OrgListType) => {
       row.name = row.orgName;
-      row.pIdArr = JSON.parse(row.pIds?.toString() || '[]')
       addEditData.value = row;
       addEditModal.value = true;
       addEditEditing.value = true;
@@ -269,7 +267,7 @@ const addEditEditing = ref(false);
 const addEditModal = ref(false);
 const addEditData = ref<OrgListType>();
 const displayData: SearchColumnType[] = [
-  { prop: 'pIdArr', label: '父组织:', type: 'cascade' },
+  { prop: 'pIds', label: '父组织:', type: 'cascade' },
   { prop: 'orgCode', label: '代码:', type: 'input', span: 11 },
   { prop: 'orgName', label: '名称:', type: 'input', span: 11 },
   { prop: 'orgDesc', label: '描述:', type: 'textArea' },
@@ -322,18 +320,15 @@ const footerButton: AddEditButtonType[] = [
       const { value: data } = addEditData
       const extraData: {
         pId?: number;
-        pIds?: string;
         tierLevel?: number;
       } = {};
       //进行输出的重组装处理
-      if (!data?.pIdArr || data.pIdArr.length === 0) {
+      if (!data?.pIds || data.pIds.length === 0) {
         extraData.pId = 0;
-        extraData.pIds = '[0]';
         extraData.tierLevel = 0;
       } else {
-        extraData.pId = data.pIdArr[data.pIdArr.length - 1];
-        extraData.pIds = JSON.stringify(data.pIdArr);
-        extraData.tierLevel = data.pIdArr.length;
+        extraData.pId = data.pIds[data.pIds.length - 1];
+        extraData.tierLevel = data.pIds.length;
       }
       const submitData: OrgListType = { ...data, ...extraData };
       if (data?.id) {

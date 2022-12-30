@@ -9,9 +9,8 @@ export interface RoleListType {
   isLeaf?: number;
   sortNo?: number;
   scopeKey?: string;
-  orgIdArr?: number[];
   orgId?: number;
-  orgIds?: string;
+  orgIds?: number[];
   orgName?: string;
   roleRemark?: string;
   createTime?: Date | string;

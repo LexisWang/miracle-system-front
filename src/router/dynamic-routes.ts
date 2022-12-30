@@ -105,6 +105,29 @@ const dynamicRoutes: RouteRecordRaw[] = [
         ]
       },
       {
+        path: '/customer',
+        name: 'customer',
+        meta: {
+          isShow: true,
+          title: '客户管理',
+          icon: 'house',
+          parent: 'home',
+        },
+        children: [
+          {
+            path: 'consignor',
+            name: 'consignor',
+            meta: {
+              isShow: true,
+              title: '发货人管理',
+              icon: 'user',
+              parent: 'customer',
+            },
+            component: () => import(/* webpackChunkName: "order" */ '@/pages/customer-page/ConsignorView.vue'),
+          },
+        ]
+      },
+      {
         path: '/order',
         name: 'order',
         meta: {

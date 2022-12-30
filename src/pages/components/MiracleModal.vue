@@ -129,13 +129,14 @@
               </el-select>
               <!--级联选择器 cascade-->
               <el-cascader
-                v-else-if="item.type=== 'cascade'"
+                v-else-if="item.type === 'cascade'"
+                clearable
+                filterable
                 v-model="addEditData[item.prop]"
                 :options="cascadeOpts[item.prop]"
                 :disabled="!editing || item.disabled"
                 :props="{checkStrictly: true, multiple: false}"
                 :placeholder="editing? item.placeholder || '请选择' : ''"
-                :clearable="item.clearable || true"
                 @change="item.onChange"
                 style="width: 100%"
               >

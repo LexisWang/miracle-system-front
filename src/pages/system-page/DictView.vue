@@ -87,6 +87,7 @@
             valueStatus: statusOpts,
         }"
           row-main-prop="valueName"
+          row-status-prop="valueStatus"
         >
           <template #footer>
             <el-pagination
@@ -132,19 +133,21 @@ import type {
   ListColumnType,
   NormalPageDataType,
   OperateMenuType,
-  SearchColumnType, TreeOptType
+  SearchColumnType,
+  TreeOptType
 } from "@/type/base-type";
 import MiracleTable from '@/pages/components/MiracleTable.vue';
 import MiracleSearch from '@/pages/components/MiracleSearch.vue';
 import MiracleModal from '@/pages/components/MiracleModal.vue';
-import { CaretRight, DeleteFilled, Edit, Expand, View } from "@element-plus/icons-vue";
-import { dictCodeCheck, dictNameCheck, valueCodeCheck, valueNameCheck } from "@/validator/dict-validator";
+import { CaretRight, DeleteFilled, Edit, Expand, Switch, View } from "@element-plus/icons-vue";
+import { dictCodeCheck, dictNameCheck, valueCodeCheck, valueNameCheck } from "@/validator/system/dict-validator";
 import type { DictListType, DictSearchType, ValueListType, ValueSearchType } from "@/type/system/dict-type";
 import { dictAddData, dictDeleteData, dictExportData, dictPageData, dictUpdateData } from "@/service/system/dict-api";
 import {
   valueAddData,
   valueDeleteData,
-  valueExportData, valueOptsData,
+  valueExportData,
+  valueOptsData,
   valuePageData,
   valueUpdateData
 } from "@/service/system/value-api";
@@ -223,6 +226,7 @@ const operateMenus: OperateMenuType[] = [
     icon: View,
     key: 'detail',
     callback: (row: DictListType) => {
+      row.name = row.dictName;
       addEditData.value = row;
       addEditModal.value = true;
       addEditEditing.value = false;
@@ -234,6 +238,7 @@ const operateMenus: OperateMenuType[] = [
     icon: Edit,
     key: 'edit',
     callback: (row: DictListType) => {
+      row.name = row.dictName;
       addEditData.value = row;
       addEditModal.value = true;
       addEditEditing.value = true;
@@ -395,8 +400,7 @@ const valueOperateMenus: OperateMenuType[] = [
     icon: View,
     key: 'detail',
     callback: (row: ValueListType) => {
-      valueAddEditData.value = { ...row, name: row.valueName,
-        includeIds: JSON.parse(row.includeIds || '[]') };
+      valueAddEditData.value = { ...row, name: row.valueName };
       valueAddEditModal.value = true;
       valueAddEditEditing.value = false;
     },
@@ -407,12 +411,21 @@ const valueOperateMenus: OperateMenuType[] = [
     icon: Edit,
     key: 'edit',
     callback: (row: ValueListType) => {
-      valueAddEditData.value = { ...row, name: row.valueName,
-        includeIds: JSON.parse(row.includeIds || '[]') };
+      valueAddEditData.value = { ...row, name: row.valueName };
       valueAddEditModal.value = true;
       valueAddEditEditing.value = true;
     },
     permission: { code: '1-8-2-2', name: 'value-update' },
+  },
+  {
+    icon: Switch,
+    key: 'switchEffect',
+    isConfirm: true,
+    confirmType: 'switch',
+    callback: ({ row }) => {
+      valueUpdateData({ id: row.id, valueStatus: row.valueStatus === 1 ? 0 : 1 }).then(() => valueSearchCallback());
+    },
+    permission: { code: '1-8-2-3', name: 'value-switch-status' },
   },
   {
     name: '删除',
@@ -423,7 +436,7 @@ const valueOperateMenus: OperateMenuType[] = [
     callback: ({ row }) => {
       valueDeleteData([row.id]).then(() => searchCallback());
     },
-    permission: { code: '1-8-2-3', name: 'value-delete' },
+    permission: { code: '1-8-2-4', name: 'value-delete' },
   },
 ];
 const valueTableData = reactive<NormalPageDataType<DictListType>>({ records: [], total: 0, pages: 0 })
@@ -474,10 +487,8 @@ const valueFooterButton: AddEditButtonType[] = [
     permission: { code: '1-8-3-2', name: 'value-ensure-submit' },
     onClick: async () => {
       const { value: data } = valueAddEditData;
-      const includeIds = JSON.parse(data?.includeIds || '[]');
-      const belongName = (data?.belongName as string[] || []).join(',');
       //进行输出的重组装处理
-      const submitData: ValueListType = { ...data, includeIds, belongName };
+      const submitData: ValueListType = { ...data, dictId: currentDict.value?.id, dictName: currentDict.value?.dictName };
       if (data?.id) {
         await valueUpdateData(submitData);
       } else {

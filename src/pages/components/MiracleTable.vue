@@ -131,6 +131,7 @@ import { ElMessage } from "element-plus";
 
 //1.父组件参数
 const props = withDefaults(defineProps<{
+  tableWidth?: number;
   tableClass?: string;
   tableLoading?: boolean;
   tableColumns: ListColumnType[];

@@ -57,7 +57,7 @@
         reqMethod: reqMethodOpts,
       }"
       :cascade-opts="{
-        pIdArr: pidOpts,
+        pIds: pidOpts,
       }"
       :radio-opts="{
         menuStatus: statusOpts,
@@ -86,7 +86,7 @@ import MiracleSearch from '@/pages/components/MiracleSearch.vue';
 import MiracleModal from '@/pages/components/MiracleModal.vue';
 import { CaretRight, DeleteFilled, Edit, Switch, View } from "@element-plus/icons-vue";
 import { dateToString, valueToLabel } from "@/utils/transform";
-import { menuCodeCheck, menuNameCheck } from "@/validator/menu-validator";
+import { menuCodeCheck, menuNameCheck } from "@/validator/system/menu-validator";
 import type { MenuListType, MenuSearchType } from "@/type/system/menu-type";
 import {
   menuAddData,
@@ -178,7 +178,6 @@ const operateMenus: OperateMenuType[] = [
     key: 'detail',
     callback: (row: MenuListType) => {
       row.name = row.menuName;
-      row.pIdArr = JSON.parse(row.pIds?.toString() || '[]')
       addEditData.value = row;
       addEditModal.value = true;
       addEditEditing.value = false;
@@ -191,7 +190,6 @@ const operateMenus: OperateMenuType[] = [
     key: 'edit',
     callback: (row: MenuListType) => {
       row.name = row.menuName;
-      row.pIdArr = JSON.parse(row.pIds?.toString() || '[]')
       addEditData.value = row;
       addEditModal.value = true;
       addEditEditing.value = true;
@@ -228,7 +226,7 @@ const addEditEditing = ref(false);
 const addEditModal = ref(false);
 const addEditData = ref<MenuListType>();
 const displayData: SearchColumnType[] = [
-  { prop: 'pIdArr', label: '父菜单:', type: 'cascade' },
+  { prop: 'pIds', label: '父菜单:', type: 'cascade' },
   { prop: 'menuCode', label: '代码:', type: 'input', span: 11 },
   { prop: 'menuName', label: '名称:', type: 'input', span: 11 },
   { prop: 'menuUrl', label: '路径URL:', type: 'textArea' },
@@ -286,18 +284,15 @@ const footerButton: AddEditButtonType[] = [
       const { value: data } = addEditData
       const extraData: {
         pId?: number;
-        pIds?: string;
         tierLevel?: number;
       } = {};
       //进行输出的重组装处理
-      if (!data?.pIdArr || data.pIdArr.length === 0) {
+      if (!data?.pIds || data.pIds.length === 0) {
         extraData.pId = 0;
-        extraData.pIds = '[0]';
         extraData.tierLevel = 0;
       } else {
-        extraData.pId = data.pIdArr[data.pIdArr.length - 1];
-        extraData.pIds = JSON.stringify(data.pIdArr);
-        extraData.tierLevel = data.pIdArr.length;
+        extraData.pId = data.pIds[data.pIds.length - 1];
+        extraData.tierLevel = data.pIds.length;
       }
       const submitData: MenuListType = { ...data, ...extraData };
       if (data?.id) {

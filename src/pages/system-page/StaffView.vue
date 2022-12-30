@@ -58,7 +58,7 @@
         superId: superIdOpts,
       }"
       :cascade-opts="{
-        orgIdArr: orgIdOpts,
+        orgIds: orgIdOpts,
       }"
       :radio-opts="{
         staffStatus: statusOpts,
@@ -85,17 +85,19 @@ import type {
 import MiracleTable from '@/pages/components/MiracleTable.vue';
 import MiracleSearch from '@/pages/components/MiracleSearch.vue';
 import MiracleModal from '@/pages/components/MiracleModal.vue';
-import { CaretRight, DeleteFilled, Edit, Switch, RefreshLeft, View } from "@element-plus/icons-vue";
+import { CaretRight, DeleteFilled, Edit, RefreshLeft, Switch, View } from "@element-plus/icons-vue";
 import { dateToString, valueToLabel } from "@/utils/transform";
-import { nicknameCheck, usernameCheck } from "@/validator/staff-validator";
+import { nicknameCheck, usernameCheck } from "@/validator/system/staff-validator";
 import type { StaffListType, StaffSearchType } from "@/type/system/staff-type";
 import {
   staffAddData,
   staffDeleteData,
   staffExportData,
   staffPageData,
+  staffResetPwd,
+  staffResetRedisLoginTime,
+  staffSuperData,
   staffUpdateData,
-  staffSuperData, staffResetPwd, staffResetRedisLoginTime,
 } from "@/service/system/staff-api";
 import { orgOptsData } from "@/service/system/org-api";
 import { roleOptsData } from "@/service/system/role-api";
@@ -164,13 +166,12 @@ const handleAdd = () => {
 const tableLoading = ref(false);
 const tableColumns: ListColumnType[] = [
   { prop: 'username', label: '账号' },
-  { prop: 'nickname', label: '昵称' },
-  { prop: 'mobile', label: '手机号', width: 100 },
-  { prop: 'orgName', label: '所属部门' },
-  { prop: 'roleName', label: '角色名称', width: 100 },
+  { prop: 'nickname', label: '昵称', width: 100 },
+  { prop: 'mobile', label: '手机号', width: 110 },
+  { prop: 'orgName', label: '所属部门', width: 100 },
+  { prop: 'roleName', label: '角色名称', width: 110 },
   { prop: 'superName', label: '领导姓名' },
   { prop: 'staffStatus', label: '状态', enumTrans: valueToLabel },
-  { prop: 'inviteCode', label: '邀请码' },
   { prop: 'scopeKey', label: '权限码' },
   { prop: 'createTime', label: '新建时间', type: 'date', formatter: dateToString, width: 100 },
   { prop: 'updateTime', label: '修改时间', type: 'date', formatter: dateToString, width: 100 },
@@ -182,7 +183,6 @@ const operateMenus: OperateMenuType[] = [
     key: 'detail',
     callback: (row: StaffListType) => {
       row.name = row.roleName;
-      row.orgIdArr = JSON.parse(row.orgIds?.toString() || '[]')
       addEditData.value = row;
       addEditModal.value = true;
       addEditEditing.value = false;
@@ -197,7 +197,6 @@ const operateMenus: OperateMenuType[] = [
       roleOptsData(row.orgId!).then(({ data }) => {
         roleIdOpts.value = data;
       });
-      row.orgIdArr = JSON.parse(row.orgIds?.toString() || '[]')
       row.name = row.roleName;
       addEditData.value = row;
       addEditModal.value = true;
@@ -218,7 +217,6 @@ const operateMenus: OperateMenuType[] = [
           }
           searchCallback();
         });
-
     },
     permission: { code: '1-6-2-3', name: 'staff-switch-status' },
   },
@@ -259,7 +257,7 @@ const addEditModal = ref(false);
 const addEditData = ref<StaffListType>();
 const displayData: SearchColumnType[] = [
   {
-    prop: 'orgIdArr',
+    prop: 'orgIds',
     label: '所属部门:',
     type: 'cascade',
     span: 11,
@@ -309,7 +307,7 @@ const displayData: SearchColumnType[] = [
   { prop: 'remark', label: '备注信息:', type: 'textArea' },
 ];
 const formRules = {
-  orgIdArr: [
+  orgIds: [
     { required: true, message: '请选择部门', trigger: 'blur' },
   ],
   roleId: [
@@ -360,18 +358,15 @@ const footerButton: AddEditButtonType[] = [
       const { value: data } = addEditData
       const extraData: {
         orgId?: number;
-        orgIds?: string;
         tierLevel?: number;
       } = {};
       //进行输出的重组装处理
-      if (!data?.orgIdArr || data.orgIdArr.length === 0) {
+      if (!data?.orgIds || data.orgIds.length === 0) {
         extraData.orgId = 0;
-        extraData.orgIds = '[0]';
         extraData.tierLevel = 0;
       } else {
-        extraData.orgId = data.orgIdArr[data.orgIdArr.length - 1];
-        extraData.orgIds = JSON.stringify(data.orgIdArr);
-        extraData.tierLevel = data.orgIdArr.length;
+        extraData.orgId = data.orgIds[data.orgIds.length - 1];
+        extraData.tierLevel = data.orgIds.length;
       }
       const submitData: StaffListType = { ...data, ...extraData };
       if (data?.id) {
