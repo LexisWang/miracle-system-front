@@ -26,7 +26,7 @@ export const notIncludeSpaceValid: ValidatorFuncType = async (_, value, callback
 export const onlyDigitalValid: ValidatorFuncType = async (_, value, callback) => {
   const reg = /^\d+$/;
   if (value && !reg.test(value)) {
-    callback(new Error("只能输入数字和中横线"));
+    callback(new Error("只能输入数字"));
   } else {
     callback();
   }
@@ -47,6 +47,15 @@ export const onlyDigitalHyphenComma: ValidatorFuncType = async (_, value, callba
   const reg = /^[\d-,]+$/;
   if (value && !reg.test(value)) {
     callback(new Error("只能输入数字,中横线,英文逗号"));
+  } else {
+    callback();
+  }
+};
+
+//只能填写浮点数
+export const onlyFloatNumber: ValidatorFuncType = async (_, value, callback) => {
+  if (parseFloat(value).toString() === "NaN") {
+    callback(new Error("只能输入数值"));
   } else {
     callback();
   }

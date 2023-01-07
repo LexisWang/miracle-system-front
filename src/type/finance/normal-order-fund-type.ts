@@ -1,0 +1,77 @@
+export interface OrderFundListType {
+  id?: number;
+  priceWeight?: number;
+  costWeight?: number;
+  unitPrice?: number;
+  costPrice?: number;
+  insuranceRate?: number;
+  exchangeRate?: number;
+  reduceAmount?: number;
+  extraAmount?: number;
+  costAmount?: number;
+  otherCost?: number;
+  collectionMoney?: number;
+  foreignCurrency?: number;
+  amountReceive?: number;
+  amountActual?: number;
+  amountCredit?: number;
+  amountUnsettle?: number;
+  foreignRmb?: number;
+  freightFee?: number;
+  dispatchFee?: number;
+  fileFee?: number;
+  operateFee?: number;
+  insuranceFee?: number;
+  serverFee?: number;
+  unloadFee?: number;
+  deliveryFee?: number;
+  insuranceMoney?: number;
+  vatFee?: number;
+  vatSar?: number;
+  vatPrice?: number;
+  vatCost?: number;
+  otherFee?: number;
+  singleDeclare?: boolean;
+  payTypeId?: number;
+  payTypeName?: string;
+  fundStatus?: number;
+  isAudit?: number;
+  noPerf?: number;
+  reduceAndCredit?: string;
+  fundRemark?: string;
+  createTime?: Date | string;
+  updateTime?: Date | string;
+  creatorId?: number;
+  creatorName?: string;
+  updaterId?: number;
+  updaterName?: string;
+  version?: number;
+  deleted?: boolean;
+}
+
+export interface ConsignorSearchType {
+  size: number;
+  current: number;
+  consignorCode?: string;
+  consignorName?: string;
+  sortCode?: string;
+  consignorStatus?: number[];
+  creditStatus?: number[];
+  salesmanId?: number;
+  toSalesmanId?: number;
+  lastSalesmanId?: number;
+  serviceId?: number;
+  categoryId?: number;
+  pathwayIds?: number[];
+  pathwayId?: number;
+  pathwayChildId?: number;
+  pathwayDetailId?: number;
+  rankId?: number;
+  firstOrderTimeStart?: number;
+  firstOrderTimeEnd?: number;
+  lastOrderTimeStart?: number;
+  lastOrderTimeEnd?: number;
+  ids?: number[];
+
+  includeSettle?: boolean;
+}

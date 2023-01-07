@@ -101,17 +101,17 @@
                 v-else-if="item.type=== 'date' || item.type === 'datetime'"
                 v-model="addEditData[item.prop]"
                 :placeholder="item.placeholder"
-                :value-format="item.format || 'yyyy-MM-dd'"
+                value-format="x"
+                :format="item.valueFormat || 'YYYY-MM-DD'"
                 :type="item.type"
                 :clearable="item.clearable || true"
-                :picker-options="item.pickerOptions || {}"
               />
               <!--选择框 select-->
               <el-select
                 :multiple="item.multiple"
                 v-else-if="item.type=== 'select'"
                 v-model="addEditData[item.prop]"
-                :filterable="item.filterable"
+                :filterable="item.filterable || true"
                 :placeholder="editing? item.placeholder || '请选择' : ''"
                 :collapse-tags="item.collapseTags"
                 :disabled="!editing || item.disabled"
@@ -131,7 +131,7 @@
               <el-cascader
                 v-else-if="item.type === 'cascade'"
                 clearable
-                filterable
+                :filterable="item.filterable || true"
                 v-model="addEditData[item.prop]"
                 :options="cascadeOpts[item.prop]"
                 :disabled="!editing || item.disabled"
@@ -168,19 +168,27 @@
                   :fetch-suggestions="(qs, cb) => getSuggestData(item.prop, qs, cb)"
                   :clearable="item.clearable || true"
                   @select="item.onSelect"
+                  style="width: 100%"
                 />
               </template>
               <!--数字输入-->
               <input-number
                 :min="item.min"
+                :max="item.max"
                 :options="item.options"
                 :value="addEditData[item.prop]"
                 v-else-if="item.type === 'number'"
                 :modal-visible="modalVisible"
                 :disabled="!editing || item.disabled"
-                @change="item.onChange"
+                @change="(v) => addEditData[item.prop] = v"
                 @blur="item.onBlur"
                 :placeholder="editing? item.placeholder || '请输入' : ''"
+              />
+              <!-- 滑块选择 -->
+              <el-switch
+                v-else-if="item.type === 'switch'"
+                v-model="addEditData[item.prop]"
+                :disabled="!editing || item.disabled"
               />
               <slot v-else-if="item.type=== 'slotItem'" :name="item.slotName"></slot>
             </el-form-item>
@@ -188,6 +196,7 @@
         </template>
       </el-row>
     </el-form>
+    <slot name="children"/>
     <template v-if="editing && footerButton" #footer>
       <el-button
         @click="footerButton?.[0]?.onClick"

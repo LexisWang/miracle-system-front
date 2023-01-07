@@ -204,7 +204,7 @@ const searchColumns: SearchColumnType[] = [
   { type: 'autocomplete', prop: 'address', placeholder: '地址' },
   { type: 'input', prop: 'orgCode', placeholder: '代码' },
   {
-    type: 'date-picker',
+    type: 'date',
     prop: 'createTime',
     placeholder: '',
     startTimeStr: '新建时间(起始)',

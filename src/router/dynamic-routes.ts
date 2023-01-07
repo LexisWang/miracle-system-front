@@ -128,36 +128,25 @@ const dynamicRoutes: RouteRecordRaw[] = [
         ]
       },
       {
-        path: '/order',
-        name: 'order',
+        path: '/business',
+        name: 'business',
         meta: {
           isShow: true,
-          title: '订单管理',
-          icon: 'menu',
+          title: '业务管理',
+          icon: 'document',
           parent: 'home',
         },
         children: [
           {
-            path: 'order-track',
-            name: 'orderTrack',
+            path: 'normal-order',
+            name: 'normalOrder',
             meta: {
               isShow: true,
-              title: '订单轨迹',
-              icon: 'van',
+              title: '订单管理',
+              icon: 'collection',
               parent: 'order',
             },
-            component: () => import(/* webpackChunkName: "order" */ '@/pages/order-page/components/OrderTrackView.vue'),
-          },
-          {
-            path: 'order-fund',
-            name: 'orderFund',
-            meta: {
-              isShow: true,
-              title: '订单款项',
-              icon: 'coin',
-              parent: 'order',
-            },
-            component: () => import(/* webpackChunkName: "order" */ '@/pages/order-page/components/OrderFundView.vue'),
+            component: () => import(/* webpackChunkName: "order" */ '@/pages/order-page/NormalOrderView.vue'),
           },
         ]
       },

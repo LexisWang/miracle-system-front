@@ -1,20 +1,21 @@
 <template>
   <el-row :gutter="16">
     <div class="add-row">
-      <el-button type="plain" disabled>新增行数</el-button>
+      <el-button disabled>新增行数</el-button>
       <el-input-number
         v-model="addRowCount"
+        :disabled="!editing"
         :precision="0"
         :controls="false"
         style="margin-right: 8px"
         @keydown.enter.down="(e) => addRows(e.target.value)"
       />
-      <el-button type="info" @click="addRows">新增</el-button>
-      <el-button type="danger" @click="cleanRows">清空</el-button>
+      <el-button type="info" @click="addRows" :disabled="!editing">新增</el-button>
+      <el-button type="danger" @click="cleanRows" :disabled="!editing">清空</el-button>
     </div>
   </el-row>
   <el-table :data="tableData" show-summary :summary-method="getSummaries">
-    <el-table-column label="序号" type="index" width="52" :fixed="'left'"/>
+    <el-table-column label="序号" type="index" width="55" :fixed="'left'"/>
     <el-table-column
       v-for="item in tableColumns" :key="item.prop"
       :fixed="item.fixed"
@@ -32,6 +33,7 @@
           :collapse-tags-tooltip="true"
           :collapse-tags="true"
           placeholder="请输入"
+          :disabled="!editing"
         >
           <el-option
             :key="otp.value"
@@ -45,6 +47,7 @@
           v-model="row[item.prop]"
           :fetch-suggestions="(qs, cb) => getSuggestData(item.prop, qs, cb)"
           placeholder="请输入"
+          :disabled="!editing"
           clearable
         />
         <el-cascader
@@ -52,6 +55,7 @@
           v-model="row[item.prop]"
           :options="cascadeOpts[item.prop]"
           :props="{checkStrictly: true, multiple: item.multiple || false}"
+          :disabled="!editing"
           collapse-tags
           filterable
           clearable
@@ -61,6 +65,7 @@
           :type="item.type"
           v-model="row[item.prop]"
           placeholder="请输入"
+          :disabled="!editing"
           @change="(v) => tansDateToInt(v, row, item.prop)"
         />
         <input-number
@@ -69,19 +74,21 @@
           :max="item.max"
           :value="row[item.prop]"
           :options="item.options"
+          :disabled="!editing"
           @change="(v) => row[item.prop] = v"
         />
         <el-input
           v-else
           v-model="row[item.prop]"
           placeholder="请输入"
+          :disabled="!editing"
           :maxlength="item.maxlength"
         />
       </template>
     </el-table-column>
     <el-table-column label="操作" align="center" width="85" :fixed="'right'">
       <template #default="{$index}">
-        <el-button type="danger" @click="deleteRow($index)">删除</el-button>
+        <el-button type="danger" @click="deleteRow($index)" :disabled="!editing">删除</el-button>
       </template>
     </el-table-column>
   </el-table>
@@ -89,7 +96,7 @@
 
 <script setup lang="ts">
 //a.公共引入
-import { ref, withDefaults } from 'vue';
+import { ref, withDefaults, watchEffect } from 'vue';
 //b.自定义类型引入
 import type { ListColumnType, SummaryMethodProps } from "@/type/base-type";
 //c.自定义工具引入
@@ -103,6 +110,7 @@ const props = withDefaults(defineProps<{
   selectOpts?: any;
   cascadeOpts?: any;
   suggestOpts?: any;
+  editing?: boolean;
 }>(), {
   selectOpts: () => ({}),
   cascadeOpts: () => ({}),
@@ -113,6 +121,7 @@ const addRowCount = ref(0);
 //2.各按钮处理函数
 const emits = defineEmits<{
   (e: 'reset-sum-row', param: any[]): void
+  (e: 'handle-calculate'): void
 }>();
 //2.1.表格数据求和
 const getSummaries = (param: SummaryMethodProps<typeof props.tableData>) => {
@@ -165,6 +174,8 @@ const deleteRow = (index: number) => {
 const cleanRows = () => {
   props.tableData.splice(0, props.tableData.length);
 };
+
+watchEffect(() => emits('handle-calculate'));
 </script>
 
 <style lang="scss" scoped>

@@ -114,7 +114,7 @@ const searchColumns: SearchColumnType[] = [
   { type: 'select', prop: 'orgStatus', placeholder: '状态' },
   { type: 'cascade', prop: 'pid', placeholder: '父组织' },
   {
-    type: 'date-picker',
+    type: 'date',
     prop: 'createTime',
     placeholder: '',
     startTimeStr: '新建时间(起始)',

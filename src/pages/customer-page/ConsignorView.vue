@@ -120,7 +120,7 @@
               @size-change="consigneeSearchCallback"
               @current-change="consigneeSearchCallback"
               v-model:page-size="consigneeSearchData.size"
-              :page-sizes="[15, 30, 50, 100]"
+              :page-sizes="[5, 10]"
               v-model:current-page="consigneeSearchData.current"
               :layout="'total, sizes, prev, pager, next, jumper'"
             />
@@ -209,14 +209,14 @@ const searchColumns: SearchColumnType[] = [
   { type: 'select', prop: 'serviceId', placeholder: '关务员' },
   { type: 'select', prop: 'categoryId', placeholder: '客户类型' },
   {
-    type: 'date-picker',
+    type: 'date',
     prop: 'firstOrderTime',
     placeholder: '',
     startTimeStr: '首单时(起始)',
     endTimeStr: '首单时间(结束)'
   },
   {
-    type: 'date-picker',
+    type: 'date',
     prop: 'lastOrderTime',
     placeholder: '',
     startTimeStr: '末单时(起始)',
@@ -228,22 +228,31 @@ const searchColumns: SearchColumnType[] = [
 ];
 const otherOperates: OperateMenuType[] = [
   {
-    name: '导出(全部)',
-    key: 'exportAll',
-    icon: CaretRight,
-    callback: () => {
-      consignorExportData({ ...searchData.value, current: 1, size: 999999 }).then();
-    },
-    permission: { code: '2-1-1-2', name: 'export-consignor-all' },
-  },
-  {
     name: '导出(本页)',
     key: 'exportPage',
     icon: CaretRight,
     callback: () => {
       consignorExportData(searchData.value).then();
     },
-    permission: { code: '2-1-1-3', name: 'export-consignor-page' },
+    permission: { code: '2-1-1-2', name: 'export-consignor-page' },
+  },
+  {
+    name: '导出(全部)',
+    key: 'exportAll',
+    icon: CaretRight,
+    callback: () => {
+      consignorExportData({ ...searchData.value, current: 1, size: 999999 }).then();
+    },
+    permission: { code: '2-1-1-3', name: 'export-consignor-all' },
+  },
+  {
+    name: '导出(收货人)',
+    key: 'exportAllChildren',
+    icon: CaretRight,
+    callback: () => {
+      consignorExportData({ ...searchData.value, current: 1, size: 999999, includeConsignee: true }).then();
+    },
+    permission: { code: '2-1-1-4', name: 'export-consignor-children' },
   },
 ];
 const searchData = ref<ConsignorSearchType>({ current: 1, size: 15 });
@@ -367,11 +376,7 @@ const operateMenus: OperateMenuType[] = [
     icon: Expand,
     key: 'credit',
     callback: (row: ConsignorListType) => {
-      currentConsignor.value = row;
-      consigneeSearchData.value.consignorId = row.id;
-      consigneeModalTitle.value = `${row.consignorCode}-诚信值`;
-      consigneeVisible.value = true;
-      consigneeSearchCallback();
+      //
     },
     permission: { code: '2-1-2-5', name: 'consignees' },
   },
@@ -397,7 +402,14 @@ const displayData: SearchColumnType[] = [
   { prop: 'categoryId', label: '客户类型:', type: 'select', span: 7 },
   { prop: 'rankId', label: '客户级别:', type: 'select', span: 7 },
   { prop: 'pathwayIds', label: '获客途径:', type: 'cascade', span: 7 },
-  { prop: 'profitRate', label: '业绩占比:', type: 'number', options: { symbol: '', precision: '0' }, span: 7 },
+  {
+    prop: 'profitRate',
+    label: '业绩占比:',
+    type: 'number', max: 100,
+    options: { symbol: '', precision: '0' },
+    placeholder: '值为0-100之间',
+    span: 7
+  },
   { prop: 'consignorStatus', label: '状态:', type: 'radio', span: 7 },
   { prop: 'address', label: '联系地址:', type: 'textArea', span: 23 },
   { prop: 'consignorRemark', label: '备注信息:', type: 'textArea', span: 23 },
@@ -405,6 +417,7 @@ const displayData: SearchColumnType[] = [
 const formRules = {
   consignorCode: [
     { required: true, message: '请输入代码', trigger: 'blur' },
+    { min: 4, max: 16, message: '代码长度4~16之间', trigger: 'blur' },
     { validator: onlyDigitalOrHyphenValid, trigger: 'blur' },
     {
       validator: (r: any, v: any, c: any, valida: any, o: any) => consignorCodeCheck(r, v, c, valida, o, addEditData.value?.id),
@@ -421,7 +434,7 @@ const formRules = {
     },
   ],
   phoneNumber: [
-    // { required: true, message: '请输入代码', trigger: 'blur' },
+    { max: 16, message: '手机号长度最大值为16', trigger: 'blur' },
     { validator: onlyDigitalOrHyphenValid, trigger: 'blur' },
     {
       validator: (r: any, v: any, c: any, valida: any, o: any) => consignorContactCheck(r, v, c, valida, o, addEditData.value),
@@ -429,6 +442,7 @@ const formRules = {
     },
   ],
   wechatNumber: [
+    { max: 24, message: '微信号长度最大为24', trigger: 'blur' },
     { validator: notIncludeSpaceValid, trigger: 'blur' },
     {
       validator: (r: any, v: any, c: any, valida: any, o: any) => consignorContactCheck(r, v, c, valida, o, addEditData.value),
@@ -436,6 +450,7 @@ const formRules = {
     },
   ],
   qqNumber: [
+    { max: 16, message: 'QQ号长度最大为16', trigger: 'blur' },
     { validator: onlyDigitalValid, trigger: 'blur' },
     {
       validator: (r: any, v: any, c: any, valida: any, o: any) => consignorContactCheck(r, v, c, valida, o, addEditData.value),
@@ -443,6 +458,7 @@ const formRules = {
     },
   ],
   otherNumber: [
+    { max: 24, message: '其他联系长度4~24之间', trigger: 'blur' },
     { validator: notIncludeSpaceValid, trigger: 'blur' },
     {
       validator: (r: any, v: any, c: any, valida: any, o: any) => consignorContactCheck(r, v, c, valida, o, addEditData.value),
@@ -560,8 +576,8 @@ const consigneeSearchCallback = () => {
   }).catch(() => consigneeTableLoading.value = false);
 };
 const consigneeResetCallback = () => {
-  consigneeSearchData.value = { current: 1, size: 10, consignorId: currentConsignor.value?.id };
-  searchCallback();
+  consigneeSearchData.value = { current: 1, size: 5, consignorId: currentConsignor.value?.id };
+  consigneeSearchCallback();
 };
 const handleAddConsignee = () => {
   consigneeAddEditModal.value = true;
@@ -646,6 +662,7 @@ const consigneeDisplayData = ref<SearchColumnType[]>([
 const consigneeFormRules = {
   consigneeCode: [
     { required: true, message: '请输入代码', trigger: 'blur' },
+    { min: 4, max: 16, message: '代码长度4~16之间', trigger: 'blur' },
     { validator: notIncludeSpaceValid, trigger: 'blur' },
     {
       validator: (r: any, v: any, c: any, valida: any, o: any) => consigneeCodeCheck(r, v, c, valida, o, {
@@ -656,8 +673,8 @@ const consigneeFormRules = {
   ],
   consigneeName: [
     { required: true, message: '请输入名称', trigger: 'blur' },
-    { validator: notIncludeSpaceValid, trigger: 'blur' },
     { min: 4, max: 32, message: '名称长度4~32之间', trigger: 'blur' },
+    { validator: notIncludeSpaceValid, trigger: 'blur' },
     {
       validator: (r: any, v: any, c: any, valida: any, o: any) => consigneeNameCheck(r, v, c, valida, o, {
         id: addEditData.value?.id,
@@ -666,10 +683,12 @@ const consigneeFormRules = {
     },
   ],
   deliveryMobile: [
+    { max: 32, message: '收货电话最大长度为32', trigger: 'blur' },
     { validator: onlyDigitalHyphenComma, trigger: 'blur' },
   ],
   deliveryMobile1: [
-    { validator: onlyDigitalHyphenComma, trigger: 'blur' },
+    { max: 16, message: '备用电话最大长度为16', trigger: 'blur' },
+    { validator: onlyDigitalOrHyphenValid, trigger: 'blur' },
   ],
   consigneeStatus: [
     { required: true, message: '请选择收货人状态', trigger: 'blur' },

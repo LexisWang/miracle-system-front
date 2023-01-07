@@ -30,6 +30,23 @@
           :formatter="(row, column, cellValue) => item.formatter(cellValue, item.type)"
         />
         <el-table-column
+          v-else-if="item.maxWidth"
+          :prop="item.prop"
+          :label="item.label"
+        >
+          <template #default="{ row, column }">
+            <el-tooltip
+              effect="dark"
+              :content="row[column.property]"
+              placement="top"
+            >
+              <div :style="`max-width: ${item.maxWidth}px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis`">
+                {{ row[column.property] }}
+              </div>
+            </el-tooltip>
+          </template>
+        </el-table-column>
+        <el-table-column
           v-else
           :fixed="item.fixed"
           :prop="item.prop"

@@ -73,4 +73,6 @@ export interface ConsignorSearchType {
   lastOrderTimeStart?: number;
   lastOrderTimeEnd?: number;
   ids?: number[];
+
+  includeConsignee?: boolean;
 }

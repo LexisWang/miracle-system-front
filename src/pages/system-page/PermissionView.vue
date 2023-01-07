@@ -108,7 +108,7 @@ const searchColumns: SearchColumnType[] = [
   { type: 'select', prop: 'permStatus', placeholder: '状态' },
   { type: 'cascade', prop: 'pid', placeholder: '父权限' },
   {
-    type: 'date-picker',
+    type: 'date',
     prop: 'createTime',
     placeholder: '',
     startTimeStr: '新建时间(起始)',

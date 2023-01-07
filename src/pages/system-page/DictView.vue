@@ -98,7 +98,7 @@
               @size-change="valueSearchCallback"
               @current-change="valueSearchCallback"
               v-model:page-size="valueSearchData.size"
-              :page-sizes="[15, 30, 50, 100]"
+              :page-sizes="[5, 10]"
               v-model:current-page="valueSearchData.current"
               :layout="'total, sizes, prev, pager, next, jumper'"
             />
@@ -160,7 +160,7 @@ const searchColumns: SearchColumnType[] = [
   { type: 'input', prop: 'dictName', placeholder: '代码' },
   { type: 'select', prop: 'dictStatus', placeholder: '状态' },
   {
-    type: 'date-picker',
+    type: 'date',
     prop: 'createTime',
     placeholder: '',
     startTimeStr: '新建时间(起始)',
@@ -375,8 +375,8 @@ const valueSearchCallback = () => {
   }).catch(() => valueTableLoading.value = false);
 };
 const valueResetCallback = () => {
-  valueSearchData.value = { current: 1, size: 10, dictId: currentDict.value?.id };
-  searchCallback();
+  valueSearchData.value = { current: 1, size: 5, dictId: currentDict.value?.id };
+  valueSearchCallback();
 };
 const handleAddValue = () => {
   valueAddEditModal.value = true;
@@ -450,7 +450,7 @@ const valueFormRules = {
     { required: true, message: '请输入代码', trigger: 'blur' },
     {
       validator: (r: any, v: any, c: any, valida: any, o: any) => valueCodeCheck(r, v, c, valida, o, {
-        id: addEditData.value?.id,
+        id: valueAddEditData.value?.id,
         dictId: currentDict.value?.id
       }), trigger: 'blur'
     },
@@ -460,7 +460,7 @@ const valueFormRules = {
     { min: 4, max: 32, message: '名称长度4~32之间', trigger: 'blur' },
     {
       validator: (r: any, v: any, c: any, valida: any, o: any) => valueNameCheck(r, v, c, valida, o, {
-        id: addEditData.value?.id,
+        id: valueAddEditData.value?.id,
         dictId: currentDict.value?.id
       }), trigger: 'blur'
     },
@@ -508,7 +508,7 @@ watch(() => currentDict.value?.id, (newV) => {
     valueDisplayData.value = [
       { prop: 'valueCode', label: '代码:', type: 'input', span: 11 },
       { prop: 'valueName', label: '名称:', type: 'input', span: 11 },
-      { prop: 'belongName', label: '运输方式:', type: 'select', span: 11 },
+      { prop: 'belongName', label: '运输方式:', type: 'select', span: 11, multiple: true,  },
       { prop: 'valueStatus', label: '状态:', type: 'radio', span: 11 },
       { prop: 'includeIds', label: '货物类型:', type: 'select', multiple: true, filterable: true, span: 23 },
     ];

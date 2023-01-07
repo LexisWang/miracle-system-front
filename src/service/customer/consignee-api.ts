@@ -3,8 +3,8 @@ import type { BaseOptType, NormalPageDataType, NormalRespType } from "@/type/bas
 import type { ConsigneeListType, ConsigneeSearchType } from "@/type/customer/consignee-type";
 
 //1.获取收货人选项
-export function consigneeOptsData(consignorId: number): Promise<NormalRespType<BaseOptType[]>> {
-  return request.post(`/customer-mgr/cms-consignee/consigneeOpts`, { consignorId });
+export function consigneeOpts(consignorId: number): Promise<NormalRespType<BaseOptType[]>> {
+  return request.post(`/customer-mgr/cms-consignee/consigneeOpts`, undefined, { params: { consignorId } });
 }
 
 //2.校验收货人数据是否重复

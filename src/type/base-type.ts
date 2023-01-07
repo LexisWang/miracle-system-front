@@ -11,8 +11,8 @@ export type DateTransType = (value: string, type: string) => string | undefined;
 
 export type ValidatorFuncType = (rule: InternalRuleItem, value: Value, callback: (error?: string | Error) => void, source: Values, options: ValidateOption, extV?: any) => void | Promise<void>;
 
-export type FormItemTypeEnum = 'input' | 'select' | 'date-picker' | 'autocomplete' | 'cascade' | 'button'
-    | 'textArea' | 'radio' | 'number';
+export type FormItemTypeEnum = 'input' | 'select' | 'date' | 'datetime' | 'autocomplete' | 'cascade' | 'button'
+    | 'textArea' | 'radio' | 'number' | 'switch';
 
 export interface FormRuleType {
   required?: boolean;
@@ -54,6 +54,7 @@ export interface BaseOptType {
   label: string;
   color?: string;
   id?: number;
+  otherLabel?: string;
 }
 
 export interface TreeOptType {
@@ -76,6 +77,7 @@ export interface SearchColumnType {
   label?: string;
   span?: number;
   min?: number;
+  max?: number;
   maxlength?: number;
   slotName?: string;
   disabled?: boolean;
@@ -95,6 +97,7 @@ export interface SearchColumnType {
   class?: string;
   pickerOptions?: any;
   format?: (v: any) => string;
+  valueFormat?: string;
   children?: any;
   hide?: boolean;
 }
@@ -107,13 +110,14 @@ export interface ListColumnType {
   enumTrans?: ValueTransType;
   multiple?: boolean;
   width?: number;
+  maxWidth?: number;
   min?: number;
   max?: number;
   options?: NumberOptionsTYpe;
   maxlength?: number;
   placeholder?: string;
   rules?: FormRuleType[];
-  type?: 'input' | 'number' | 'select' | 'date' | 'datetime' | 'autocomplete' | 'cascade' | 'button';
+  type?: 'input' | 'number' | 'select' | 'date' | 'datetime' | 'autocomplete' | 'cascade' | 'button' | 'digital';
 }
 
 export interface OperateMenuType {

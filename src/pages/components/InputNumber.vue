@@ -8,11 +8,11 @@
     @blur="handleBlur"
     :placeholder="placeholder"
   />
-</template>
+</template>`
 
-<script setup lang="ts">  //@ts-ignore
+<script setup lang="ts">    //@ts-ignore
 import * as accounting from 'accounting-js';
-import { withDefaults, onMounted, ref, watch  } from 'vue';
+import { onMounted, ref, watch, withDefaults } from 'vue';
 
 const props = withDefaults(defineProps<{
   value?: number;
@@ -41,21 +41,19 @@ const sValue = ref('');
 const focus = ref(false);
 
 const setValue = (v?: number) => {
-  if (iValue.value !== v) {
-    iValue.value = accounting.toFixed(v, +(props.options.precision || 0));
-    dValue.value = iValue.value.toString();
+  iValue.value = accounting.toFixed(v, +(props.options.precision || 0));
+  dValue.value = iValue.value.toString();
 
-    sValue.value = accounting.formatMoney(dValue.value, props.options);
-    iValue.value = accounting.unformat(sValue.value);
-    iValue.value = Math.min(props.max, iValue.value);
-    iValue.value = Math.max(props.min, iValue.value);
-    if (focus.value) {
-      dValue.value = iValue.value.toString();
-    } else {
-      dValue.value = sValue.value;
-    }
-    emits('change', iValue.value);
+  sValue.value = accounting.formatMoney(dValue.value, props.options);
+  iValue.value = accounting.unformat(sValue.value);
+  iValue.value = Math.min(props.max, iValue.value);
+  iValue.value = Math.max(props.min, iValue.value);
+  if (focus.value) {
+    dValue.value = iValue.value.toString();
+  } else {
+    dValue.value = sValue.value;
   }
+  emits('change', iValue.value);
 };
 const onFocusHandle = () => {
   focus.value = true;
@@ -69,18 +67,13 @@ const handleBlur = () => {
   } else {
     iValue.value = parseFloat(dValue.value);
   }
+  iValue.value = Math.min(props.max, iValue.value);
+  iValue.value = Math.max(props.min, iValue.value);
   iValue.value = accounting.toFixed(iValue.value, +(props.options.precision || 0));
   dValue.value = iValue.value.toString();
 
   sValue.value = accounting.formatMoney(dValue.value, { ...props.options });
   iValue.value = accounting.unformat(sValue.value);
-  iValue.value = Math.min(props.max, iValue.value);
-  iValue.value = Math.max(props.min, iValue.value);
-
-  if (!iValue.value) {
-    sValue.value = ''
-  }
-
   dValue.value = sValue.value;
   emits('change', iValue.value);
 }
@@ -94,6 +87,9 @@ watch(() => props.modalVisible, () => {
   } else {
     setValue(props.value);
   }
+});
+watch(() => props.value, () => {
+  setValue(props.value);
 });
 </script>
 

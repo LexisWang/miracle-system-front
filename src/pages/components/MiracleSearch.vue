@@ -16,6 +16,7 @@
         <el-select
           v-else-if="item.type === 'select'"
           :multiple="item.multiple || true"
+          :filterable="item.filterable || true"
           :clearable="true"
           :collapse-tags="true"
           :collapse-tags-tooltip="true"
@@ -41,20 +42,22 @@
         <el-cascader
           v-else-if="item.type === 'cascade'"
           clearable
-          filterable
           collapse-tags
+          :filterable="item.filterable || true"
+          v-model="searchData[item.prop]"
           :options="cascadeOpts[item.prop]"
           :placeholder="item.placeholder"
-          :props="{checkStrictly: true, multiple: typeof item.multiple !== 'undefined' ? item.multiple : true}"
+          :props="{checkStrictly: true, multiple: item.multiple ?? true}"
           style="width: 100%; margin-bottom: 8px"
         />
         <el-date-picker
-          v-else-if="item.type === 'date-picker'"
-          type="daterange"
+          v-else-if="['date', 'datetime'].includes(item.type)"
+          :type="`${item.type}range`"
           v-model="searchData[item.prop]"
           range-separator="至"
           :start-placeholder="item.startTimeStr"
           :end-placeholder="item.endTimeStr"
+          :shortcuts="datetimeRangeShortcuts"
           style="width: 95%; margin-bottom: 8px"
         />
         <div class="button-col" v-else-if="item.type === 'button'">
@@ -96,6 +99,7 @@
 //a.公共引入
 import { ref } from 'vue';
 import { MoreFilled } from '@element-plus/icons-vue';
+import { datetimeRangeShortcuts } from '@/utils/constant';
 //b.自定义类型引入
 import type { ElPermissionType, OperateMenuType, SearchColumnType } from "@/type/base-type";
 

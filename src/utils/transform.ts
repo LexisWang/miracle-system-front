@@ -6,6 +6,9 @@ const valueToLabel: ValueTransType = ({ row, column }, options) => {
 };
 
 const dateToString: DateTransType = (value, options) => {
+  if (!value) {
+    return '';
+  }
   switch (options) {
     case 'date':
       return moment(value).format('YYYY-MM-DD');
